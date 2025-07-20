@@ -2,7 +2,7 @@ package com.zt.bookkeeping.ledger.infrastructure.exception;
 
 import com.zt.bookkeeping.ledger.common.enums.ResultCode;
 import com.zt.bookkeeping.ledger.domain.exception.DomainException;
-import com.zt.bookkeeping.ledger.infrastructure.common.Result;
+import com.zt.bookkeeping.ledger.common.res.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

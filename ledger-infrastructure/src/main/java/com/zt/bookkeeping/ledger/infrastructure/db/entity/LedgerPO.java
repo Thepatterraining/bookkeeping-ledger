@@ -10,17 +10,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class UserPO {
+public class LedgerPO {
     private Long id;
-    private String userNo;
-    private String username;
-    private String password;
-    private String email;
-    private String mobile;
-    private Integer gender;
-    private Integer age;
-    private Integer userStatus;
-    private Integer userType;
+    private String ledgerNo;
+    private String ledgerName;
+    private String ownerNo;
+    private Integer ledgerStatus;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

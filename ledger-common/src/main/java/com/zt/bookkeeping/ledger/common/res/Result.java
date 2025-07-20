@@ -1,4 +1,4 @@
-package com.zt.bookkeeping.ledger.infrastructure.common;
+package com.zt.bookkeeping.ledger.common.res;
 
 
 import com.zt.bookkeeping.ledger.common.enums.ResultCode;
