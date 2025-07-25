@@ -37,4 +37,27 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         return ledgerAgg;
     }
 
+    @Override
+    public LedgerAgg findByNoInUser(String ledgerNo, String userNo) {
+        LambdaQueryWrapper<LedgerPO>  wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LedgerPO::getOwnerNo, userNo)
+                .eq(LedgerPO::getLedgerNo, ledgerNo);
+        LedgerPO ledgerPO = ledgerMapper.selectOne(wrapper);
+        if (ledgerPO == null) {
+            return null;
+        }
+        // todo
+        LedgerAgg ledgerAgg = new LedgerAgg();
+        BeanUtils.copyProperties(ledgerPO, ledgerAgg);
+        return ledgerAgg;
+    }
+
+    @Override
+    public void update(LedgerAgg ledgerAgg) {
+        // 更新账本信息
+        LedgerPO ledgerPO = new LedgerPO();
+        BeanUtils.copyProperties(ledgerAgg, ledgerPO);
+        ledgerMapper.updateById(ledgerPO);
+    }
+
 }

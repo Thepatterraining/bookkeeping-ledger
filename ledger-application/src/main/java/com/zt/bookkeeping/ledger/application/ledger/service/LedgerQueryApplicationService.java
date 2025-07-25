@@ -1,11 +1,12 @@
 package com.zt.bookkeeping.ledger.application.ledger.service;
 
 import com.zt.bookkeeping.ledger.application.ledger.dto.CreateLedgerRequest;
+import com.zt.bookkeeping.ledger.application.ledger.dto.QueryLedgerListRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
+import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerCreatedEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
-import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerCreatedEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class LedgerCommandApplicationService {
+public class LedgerQueryApplicationService {
 
     @Resource
     private ApplicationEventPublisher eventPublisher;
@@ -23,8 +24,8 @@ public class LedgerCommandApplicationService {
     @Resource
     private LedgerDomainService ledgerDomainService;
 
-    public String createLedger(CreateLedgerRequest request) {
-        // 查询该账本是否已经存在 todo
+    public String getLedgerList(QueryLedgerListRequest request) {
+        // 查询用户账本列表
         LedgerAgg ledger = ledgerDomainService.findByNameInUser(request.getLedgerName(), "");
         if (ledger != null) {
             return "Ledger already exists";
@@ -37,31 +38,5 @@ public class LedgerCommandApplicationService {
         eventPublisher.publishEvent(new LedgerCreatedEvent(ledgerAgg.getOwnerNo(), ledgerAgg.getLedgerName(), ledgerAgg.getLedgerNo(), LocalDateTime.now()));
 
         return ledgerAgg.getLedgerNo();
-    }
-
-    public String updateLedger(UpdateLedgerRequest request) {
-        // 查询该账本是否已经存在
-        LedgerAgg ledger = ledgerDomainService.findByNoInUser(request.getLedgerNo(), "");
-        if (ledger == null) {
-            return "Ledger not exists";
-        }
-        // 账本存在则更新
-        ledger.save(convert(request));
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerDomainService.save(ledger);
-
-        // 账本已更新事件
-        eventPublisher.publishEvent(new LedgerUpdatedEvent(ledgerAgg.getOwnerNo(), ledgerAgg.getLedgerName(), ledgerAgg.getLedgerNo(), LocalDateTime.now()));
-
-        return ledgerAgg.getLedgerNo();
-    }
-
-    private LedgerAgg convert(UpdateLedgerRequest request) {
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerAgg.setLedgerNo(request.getLedgerNo());
-        ledgerAgg.setLedgerImage(request.getLedgerImage());
-        ledgerAgg.setLedgerName(request.getLedgerName());
-        ledgerAgg.setLedgerDesc(request.getLedgerDesc());
-        return ledgerAgg;
     }
 }

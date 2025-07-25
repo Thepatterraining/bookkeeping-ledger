@@ -15,7 +15,15 @@ public class LedgerDomainService {
         return ledgerRepository.findByNameInUser(name, userNo);
     }
 
+    public LedgerAgg findByNoInUser(String ledgerNo, String userNo) {
+        return ledgerRepository.findByNoInUser(ledgerNo, userNo);
+    }
+
     public void insert(LedgerAgg userAgg) {
         ledgerRepository.insert(userAgg);
+    }
+
+    public void save(LedgerAgg userAgg) {
+        ledgerRepository.update(userAgg);
     }
 }
