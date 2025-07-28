@@ -1,16 +1,24 @@
 package com.zt.bookkeeping.ledger.domain.ledger.entity;
 
+import com.zt.bookkeeping.ledger.common.base.AbstractAgg;
+import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerCreatedEvent;
+import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-public class LedgerAgg {
+@Builder
+@RequiredArgsConstructor
+public class LedgerAgg extends AbstractAgg {
     private Long id;
     private String ledgerNo;
     private String ledgerName;
     private String ownerNo;
-    private Integer ledgerStatus;
+    private LedgerStatusVO ledgerStatus;
     private String ledgerDesc;
     private String ledgerImage;
     private LocalDateTime createTime;
@@ -19,14 +27,25 @@ public class LedgerAgg {
     // 最新的一个预算信息
     private LedgerBudgetVO lastLedgerBudget;
 
-    public void save(LedgerAgg ledgerAgg) {
-        updateSelf(ledgerAgg);
+    public void save(String ledgerName, String ledgerDesc, String ledgerImage) {
+        updateSelf(ledgerName, ledgerDesc, ledgerImage);
+
+        // 创建账本更新事件
+        registerDomainEvent(new LedgerUpdatedEvent(this));
     }
 
-    private void updateSelf(LedgerAgg ledgerAgg) {
-        this.ledgerName = ledgerAgg.getLedgerName();
-        this.ledgerDesc = ledgerAgg.getLedgerDesc();
-        this.ledgerImage = ledgerAgg.getLedgerImage();
-        this.ledgerStatus = ledgerAgg.getLedgerStatus();
+    private void updateSelf(String ledgerName, String ledgerDesc, String ledgerImage) {
+        this.ledgerName = ledgerName;
+        this.ledgerDesc = ledgerDesc;
+        this.ledgerImage = ledgerImage;
+    }
+
+    public void create() {
+        ledgerStatus = LedgerStatusVO.NORMAL;
+        createTime = LocalDateTime.now();
+        updateTime = createTime;
+
+        // 注册账本已创建事件
+        registerDomainEvent(new LedgerCreatedEvent(this));
     }
 }

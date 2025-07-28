@@ -8,7 +8,7 @@ public interface LedgerRepository {
 
     LedgerAgg findByNameInUser(String name, String userNo);
 
-    LedgerAgg findByNoInUser(String ledgerNo, String userNo);
+    LedgerAgg load(String ledgerNo);
 
     void update(LedgerAgg ledgerAgg);
 }

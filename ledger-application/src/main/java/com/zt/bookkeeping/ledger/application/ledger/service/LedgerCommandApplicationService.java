@@ -2,8 +2,10 @@ package com.zt.bookkeeping.ledger.application.ledger.service;
 
 import com.zt.bookkeeping.ledger.application.ledger.dto.CreateLedgerRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
+import com.zt.bookkeeping.ledger.common.base.DomainEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
+import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
 import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerCreatedEvent;
 import jakarta.annotation.Resource;
@@ -12,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -23,45 +26,42 @@ public class LedgerCommandApplicationService {
     @Resource
     private LedgerDomainService ledgerDomainService;
 
+    @Resource
+    private LedgerFactory ledgerFactory;
+
     public String createLedger(CreateLedgerRequest request) {
         // 查询该账本是否已经存在 todo
         LedgerAgg ledger = ledgerDomainService.findByNameInUser(request.getLedgerName(), "");
         if (ledger != null) {
             return "Ledger already exists";
         }
-        // 账本不存在则插入
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerDomainService.insert(ledgerAgg);
+        // 账本不存在则创建
+        LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), "", "", "");
+        ledgerAgg.create();
 
-        // 账本已创建事件
-        eventPublisher.publishEvent(new LedgerCreatedEvent(ledgerAgg.getOwnerNo(), ledgerAgg.getLedgerName(), ledgerAgg.getLedgerNo(), LocalDateTime.now()));
+        // 插入数据库
+        ledgerDomainService.save(ledgerAgg);
 
+        // 获取注册的事件进行发布
+        List<DomainEvent> domainEventList = ledgerAgg.getDomainEvents();
+        eventPublisher.publishEvent(domainEventList);
+
+        // 返回账本编号
         return ledgerAgg.getLedgerNo();
     }
 
-    public String updateLedger(UpdateLedgerRequest request) {
+    public void updateLedger(UpdateLedgerRequest request) {
         // 查询该账本是否已经存在
-        LedgerAgg ledger = ledgerDomainService.findByNoInUser(request.getLedgerNo(), "");
-        if (ledger == null) {
+        LedgerAgg ledgerAgg = ledgerDomainService.findByNo(request.getLedgerNo());
+        if (ledgerAgg == null) {
             return "Ledger not exists";
         }
         // 账本存在则更新
-        ledger.save(convert(request));
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerDomainService.save(ledger);
+        ledgerAgg.save(request.getLedgerName(), request.getLedgerDesc(), request.getLedgerImage());
+        ledgerDomainService.save(ledgerAgg);
 
-        // 账本已更新事件
-        eventPublisher.publishEvent(new LedgerUpdatedEvent(ledgerAgg.getOwnerNo(), ledgerAgg.getLedgerName(), ledgerAgg.getLedgerNo(), LocalDateTime.now()));
-
-        return ledgerAgg.getLedgerNo();
-    }
-
-    private LedgerAgg convert(UpdateLedgerRequest request) {
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerAgg.setLedgerNo(request.getLedgerNo());
-        ledgerAgg.setLedgerImage(request.getLedgerImage());
-        ledgerAgg.setLedgerName(request.getLedgerName());
-        ledgerAgg.setLedgerDesc(request.getLedgerDesc());
-        return ledgerAgg;
+        // 获取注册的事件进行发布
+        List<DomainEvent> domainEventList = ledgerAgg.getDomainEvents();
+        eventPublisher.publishEvent(domainEventList);
     }
 }

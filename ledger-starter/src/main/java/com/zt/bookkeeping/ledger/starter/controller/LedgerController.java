@@ -25,7 +25,7 @@ public class LedgerController {
 
     @PostMapping("/update")
     public Result<String> updateLedger(UpdateLedgerRequest request) {
-        String ledgerNo = ledgerCommandApplicationService.createLedger(request);
-        return Result.success(ledgerNo);
+        ledgerCommandApplicationService.updateLedger(request);
+        return Result.success();
     }
 }
