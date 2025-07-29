@@ -5,6 +5,8 @@ import com.zt.bookkeeping.ledger.domain.ledger.repository.LedgerRepository;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LedgerDomainService {
 

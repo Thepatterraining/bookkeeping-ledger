@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@RequiredArgsConstructor
 public class LedgerAgg extends AbstractAgg {
     private Long id;
     private String ledgerNo;

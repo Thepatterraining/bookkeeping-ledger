@@ -4,6 +4,7 @@ package com.zt.bookkeeping.ledger.infrastructure.db.entity;
 import com.zt.bookkeeping.ledger.common.base.AbstractPO;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;

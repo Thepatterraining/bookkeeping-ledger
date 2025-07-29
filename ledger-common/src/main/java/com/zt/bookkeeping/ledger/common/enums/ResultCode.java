@@ -33,10 +33,9 @@ public enum ResultCode {
     DATA_ALREADY_EXISTS(1005, "数据已存在"),
     OPERATION_FAILED(1006, "操作失败"),
 
-    USER_NOT_FOUND(1007, "用户不存在"),
-    USER_PASSWORD_ERROR(1008, "密码错误"),
-    USER_STATUS_ERROR(1009, "用户状态异常"),
-    USER_ALREADY_EXISTS(1010, "用户已存在"),
+    LEDGER_NOT_FOUND(1007, "账本不存在"),
+    LEDGER_ALREADY_EXISTS(1008, "账本已存在"),
+
     ;
 
     private final Integer code;

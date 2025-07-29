@@ -71,16 +71,17 @@ public class LedgerRepositoryImpl implements LedgerRepository {
     }
 
     private LedgerAgg toEntity(LedgerPO ledgerPO, LedgerBudgetPO ledgerBudgetPO) {
-        LedgerAgg ledgerAgg = new LedgerAgg();
-        ledgerAgg.setId(ledgerPO.getId());
-        ledgerAgg.setLedgerName(ledgerPO.getLedgerName());
-        ledgerAgg.setLedgerNo(ledgerPO.getLedgerNo());
-        ledgerAgg.setLedgerDesc(ledgerPO.getLedgerDesc());
-        ledgerAgg.setLedgerImage(ledgerPO.getLedgerImage());
-        ledgerAgg.setLedgerStatus(LedgerStatusVO.of(ledgerPO.getLedgerStatus()));
-        ledgerAgg.setOwnerNo(ledgerPO.getOwnerNo());
-        ledgerAgg.setCreateTime(ledgerPO.getCreateTime());
-        ledgerAgg.setUpdateTime(ledgerPO.getUpdateTime());
+        LedgerAgg ledgerAgg = LedgerAgg.builder()
+                .id(ledgerPO.getId())
+                .ledgerName(ledgerPO.getLedgerName())
+                .ledgerNo(ledgerPO.getLedgerNo())
+                .ledgerStatus(LedgerStatusVO.of(ledgerPO.getLedgerStatus()))
+                .ownerNo(ledgerPO.getOwnerNo())
+                .ledgerDesc(ledgerPO.getLedgerDesc())
+                .ledgerImage(ledgerPO.getLedgerImage())
+                .createTime(ledgerPO.getCreateTime())
+                .updateTime(ledgerPO.getUpdateTime())
+                .build();
         // 预算信息
         if (ledgerBudgetPO != null) {
             LedgerBudgetVO ledgerBudgetVO = LedgerBudgetVO.builder()

@@ -19,6 +19,10 @@
 			<groupId>com.zt.bookkeeping.ledger</groupId>
 			<artifactId>ledger-domain</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.zt.bookkeeping.ledger</groupId>
+			<artifactId>ledger-infrastructure</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

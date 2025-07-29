@@ -3,6 +3,9 @@ package com.zt.bookkeeping.ledger.application.ledger.service;
 import com.zt.bookkeeping.ledger.application.ledger.dto.CreateLedgerRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
 import com.zt.bookkeeping.ledger.common.base.DomainEvent;
+import com.zt.bookkeeping.ledger.common.enums.ResultCode;
+import com.zt.bookkeeping.ledger.domain.exception.AggNotExistsException;
+import com.zt.bookkeeping.ledger.domain.exception.DomainException;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
@@ -30,10 +33,10 @@ public class LedgerCommandApplicationService {
     private LedgerFactory ledgerFactory;
 
     public String createLedger(CreateLedgerRequest request) {
-        // 查询该账本是否已经存在 todo
+        // 查询该账本是否已经存在
         LedgerAgg ledger = ledgerDomainService.findByNameInUser(request.getLedgerName(), "");
         if (ledger != null) {
-            return "Ledger already exists";
+            throw new AggNotExistsException(ResultCode.LEDGER_ALREADY_EXISTS);
         }
         // 账本不存在则创建
         LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), "", "", "");
@@ -54,7 +57,7 @@ public class LedgerCommandApplicationService {
         // 查询该账本是否已经存在
         LedgerAgg ledgerAgg = ledgerDomainService.findByNo(request.getLedgerNo());
         if (ledgerAgg == null) {
-            return "Ledger not exists";
+            throw new AggNotExistsException(ResultCode.LEDGER_NOT_FOUND);
         }
         // 账本存在则更新
         ledgerAgg.save(request.getLedgerName(), request.getLedgerDesc(), request.getLedgerImage());
