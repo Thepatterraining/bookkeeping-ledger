@@ -1,0 +1,81 @@
+server:
+  port: 9002
+  ## 开启优雅停机, 如果不配置是默认IMMEDIATE, 立即停机
+  shutdown: graceful
+spring:
+  # 配置下面两个值将会走到 ControllerAdvice 全局里面去
+  # org.springframework.boot.autoconfigure.web.WebMvcProperties
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  lifecycle:
+    ## 优雅停机宽限期时间
+    timeout-per-shutdown-phase: 10s
+  # 当前服务名
+  application.name: bookkeeping-ledger
+  datasource:
+    url: jdbc:mysql://localhost:3306/bookkeeping?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+#    password: 123456
+    password: zt123456789+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      #自动提交
+      auto-commit: true
+      connection-test-query: SELECT 1
+      #等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒 -->
+      connection-timeout: 30000
+      # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟 -->
+      idle-timeout: 300000
+      #一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟
+      max-lifetime: 1800000
+      #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count) -->
+      maximum-pool-size: 20
+      #池中维护的最小空闲连接数，如果当连接池空闲连接少于 minimumIdle，
+      #而且总共连接数不大于 maximumPoolSize 时，HikariCP 会尽力补充新的连接。为了性能考虑，不建议设置此值，而是让 HikariCP 把连接池当做固定大小的处理，默认 minimumIdle 与 maximumPoolSize 一样。
+      minimum-idle: 5
+      pool-name: DatebookHikariCP
+      read-only: false
+      #验证与数据库连接的有效时间
+      validation-timeout: 5000
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      location: /Users/zt/learn/upload
+
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        register-enabled: true
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+        ip: ${spring.cloud.client.ip-address:}
+        port: ${server.port:8080}
+        metadata:
+          version: ${project.version:0.0.1-SNAPSHOT}
+
+#线程池配置参数
+task:
+  pool:
+    corePoolSize: 5 #设置核心线程数
+    maxPoolSize: 20  #设置最大线程数
+    keepAliveSeconds: 300 #设置线程活跃时间（秒）
+    queueCapacity: 50 #设置队列容量
+    threadNamePrefix: # 线程名
+
+mybatis-plus:
+  mapper-locations: classpath*:com/zt/bookkeeping/user/**/db/xml/*
+  type-aliases-package: com.zt.bookkeeping.user
+
+# 雪花算法
+snowflake:
+  machine-id: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,nacos-discovery,nacos-config

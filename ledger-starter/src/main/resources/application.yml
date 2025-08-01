@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: local
+  # 配置下面两个值将会走到 ControllerAdvice 全局里面去
+  # org.springframework.boot.autoconfigure.web.WebMvcProperties
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  lifecycle:
+    ## 优雅停机宽限期时间
+    timeout-per-shutdown-phase: 10s
+  # 当前服务名
+  application.name: bookkeeping-user
+

@@ -14,6 +14,7 @@ import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
 import com.zt.bookkeeping.ledger.infrastructure.db.LedgerMapper;
 import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerPO;
 import com.zt.bookkeeping.ledger.infrastructure.util.LocalDateTimeUtil;
+import com.zt.bookkeeping.ledger.infrastructure.util.UserContextHolder;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -59,9 +60,11 @@ public class LedgerQueryApplicationService {
     }
 
     public PageRes<LedgerListRes> getLedgerList(QueryLedgerListRequest request) {
+        // 获取用户ID
+        String userNo = UserContextHolder.getCurrentUserNo();
         // 查询用户账本列表
         LambdaQueryWrapper<LedgerPO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LedgerPO::getOwnerNo, "");
+        wrapper.eq(LedgerPO::getOwnerNo, userNo);
         Page<LedgerPO> pageList = ledgerMapper.selectPage(Page.of(request.getPage(), request.getSize()), wrapper);
 
         // 组装返回

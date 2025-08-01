@@ -30,6 +30,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
 		<project.version>0.0.1-SNAPSHOT</project.version>
 	</properties>
 
@@ -65,6 +66,14 @@
 				<groupId>com.zt.bookkeeping.ledger</groupId>
 				<artifactId>ledger-infrastructure</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<!-- 添加Spring Cloud Alibaba版本管理 -->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>${spring-cloud-alibaba.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -113,6 +122,22 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.2</version>
 			<scope>runtime</scope>
+		</dependency>
+		<!-- 添加Nacos服务发现依赖 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+
+		<!-- 添加Nacos配置管理依赖 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+		<!-- 添加bootstrap配置支持 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
 		</dependency>
 	</dependencies>
 

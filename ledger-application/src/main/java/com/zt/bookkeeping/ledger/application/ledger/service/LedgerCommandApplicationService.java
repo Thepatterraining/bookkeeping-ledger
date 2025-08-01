@@ -11,6 +11,7 @@ import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
 import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerCreatedEvent;
+import com.zt.bookkeeping.ledger.infrastructure.util.UserContextHolder;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,13 +34,16 @@ public class LedgerCommandApplicationService {
     private LedgerFactory ledgerFactory;
 
     public String createLedger(CreateLedgerRequest request) {
+        // 获取用户ID
+        String userNo = UserContextHolder.getCurrentUserNo();
+
         // 查询该账本是否已经存在
-        LedgerAgg ledger = ledgerDomainService.findByNameInUser(request.getLedgerName(), "");
+        LedgerAgg ledger = ledgerDomainService.findByNameInUser(request.getLedgerName(), userNo);
         if (ledger != null) {
             throw new AggNotExistsException(ResultCode.LEDGER_ALREADY_EXISTS);
         }
         // 账本不存在则创建
-        LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), "", "", "");
+        LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), userNo, "", "");
         ledgerAgg.create();
 
         // 插入数据库
@@ -47,7 +51,7 @@ public class LedgerCommandApplicationService {
 
         // 获取注册的事件进行发布
         List<DomainEvent> domainEventList = ledgerAgg.getDomainEvents();
-        eventPublisher.publishEvent(domainEventList);
+        domainEventList.forEach(event -> eventPublisher.publishEvent(event));
 
         // 返回账本编号
         return ledgerAgg.getLedgerNo();
