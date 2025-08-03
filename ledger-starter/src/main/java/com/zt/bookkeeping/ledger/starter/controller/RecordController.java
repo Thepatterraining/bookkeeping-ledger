@@ -1,20 +1,21 @@
 package com.zt.bookkeeping.ledger.starter.controller;
 
-import com.zt.bookkeeping.ledger.application.ledger.dto.*;
+import com.zt.bookkeeping.ledger.application.ledger.dto.CreateLedgerRequest;
+import com.zt.bookkeeping.ledger.application.ledger.dto.LedgerListRes;
+import com.zt.bookkeeping.ledger.application.ledger.dto.QueryLedgerListRequest;
+import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
 import com.zt.bookkeeping.ledger.application.ledger.service.LedgerCommandApplicationService;
 import com.zt.bookkeeping.ledger.application.ledger.service.LedgerQueryApplicationService;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
-import com.zt.bookkeeping.ledger.domain.ledger.repository.LedgerRepository;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ledger")
-public class LedgerController {
+@RequestMapping("/record")
+public class RecordController {
 
     @Resource
     private LedgerCommandApplicationService ledgerCommandApplicationService;
@@ -37,11 +38,5 @@ public class LedgerController {
     @PostMapping("/list")
     public Result<PageRes<LedgerListRes>> deleteLedger(QueryLedgerListRequest request) {
         return Result.success(ledgerQueryApplicationService.getLedgerList(request));
-    }
-
-    @PostMapping("/update/budget")
-    public Result<String> updateLedgerBudget(UpdateLedgerBudgetRequest request) {
-        ledgerCommandApplicationService.updateLedgerBudget(request);
-        return Result.success();
     }
 }

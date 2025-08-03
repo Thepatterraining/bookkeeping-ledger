@@ -33,6 +33,14 @@ public class LedgerAgg extends AbstractAgg {
         registerDomainEvent(new LedgerUpdatedEvent(this));
     }
 
+    public void saveBudget(LedgerBudgetVO ledgerBudget) {
+
+    }
+
+    public void updateBudget(LedgerBudgetVO ledgerBudget) {
+        lastLedgerBudget = ledgerBudget;
+    }
+
     private void updateSelf(String ledgerName, String ledgerDesc, String ledgerImage) {
         this.ledgerName = ledgerName;
         this.ledgerDesc = ledgerDesc;
