@@ -11,4 +11,6 @@ public interface LedgerRepository {
     LedgerAgg load(String ledgerNo);
 
     void update(LedgerAgg ledgerAgg);
+
+    Boolean exists(String ledgerNo);
 }

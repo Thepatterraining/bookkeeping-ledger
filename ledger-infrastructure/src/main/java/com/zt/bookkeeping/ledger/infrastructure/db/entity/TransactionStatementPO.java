@@ -7,23 +7,25 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.zt.bookkeeping.ledger.common.base.AbstractPO;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-
-@SuperBuilder
-@TableName("ledger")
 @Getter
-public class LedgerPO extends AbstractPO {
+@SuperBuilder
+@TableName("transaction_statement")
+public class TransactionStatementPO extends AbstractPO {
 
+    private String transactionStatementNo;
     private String ledgerNo;
-    private String ledgerName;
-    private String ownerNo;
-    private Integer ledgerStatus;
-    private String ledgerDesc;
-    private String ledgerImage;
+    private Integer amount;
+    private Integer transactionType;
+    private LocalDateTime transactionTime;
+    private String transactionDesc;
+    private Integer transactionStatus;
+    private String categoryNo;
+    private String categoryName;
+    private Integer categoryType; // 1 系统 2 用户
 
 }

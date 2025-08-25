@@ -55,4 +55,8 @@ public class LedgerAgg extends AbstractAgg {
         // 注册账本已创建事件
         registerDomainEvent(new LedgerCreatedEvent(this));
     }
+
+    public Boolean checkUserPermission(String userNo) {
+        return ownerNo.equals(userNo);
+    }
 }

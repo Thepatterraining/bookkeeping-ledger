@@ -4,6 +4,7 @@ import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
 import com.zt.bookkeeping.ledger.domain.ledger.repository.LedgerRepository;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 
 import java.util.List;
 

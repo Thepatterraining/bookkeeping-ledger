@@ -127,4 +127,10 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         ledgerBudgetMapper.updateById(ledgerBudgetPO);
     }
 
+    public Boolean exists(String ledgerNo) {
+        LambdaQueryWrapper<LedgerPO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LedgerPO::getLedgerNo, ledgerNo);
+        return ledgerMapper.exists(wrapper);
+    }
+
 }
