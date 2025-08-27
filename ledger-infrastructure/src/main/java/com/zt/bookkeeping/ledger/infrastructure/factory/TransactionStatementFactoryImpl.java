@@ -1,5 +1,6 @@
 package com.zt.bookkeeping.ledger.infrastructure.factory;
 
+import com.zt.bookkeeping.ledger.domain.generator.SnowFlakeGenerator;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerBudgetVO;
 import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
@@ -33,6 +34,9 @@ public class TransactionStatementFactoryImpl implements TransactionStatementFact
     @Resource
     private UserCategoryRepository userCategoryRepository;
 
+    @Resource
+    private SnowFlakeGenerator snowFlakeGenerator;
+
     @Override
     public TransactionStatementAgg createTransactionStatementAgg(String ledgerNo, BigDecimal amount,
             Integer transactionType, String transactionDesc, String categoryNo, Integer categoryType, String userNo) {
@@ -49,12 +53,14 @@ public class TransactionStatementFactoryImpl implements TransactionStatementFact
         }
 //        CategoryVO category = transactionStatementRepository.loadCategory(
 //                categoryNo);
+        // 生成ledger no
+        String no = snowFlakeGenerator.nextId("transaction");
         return TransactionStatementAgg.builder()
+                .transactionStatementNo(no)
                 .ledgerNo(ledgerNo)
                 .amount(amount.multiply(new BigDecimal(100)).intValue())
                 .transactionType(TransactionTypeVO.of(transactionType))
                 .transactionDesc(transactionDesc)
-                .transactionStatementNo(UUID.randomUUID().toString())
                 .categorySnapshot(category)
                 .build();
     }

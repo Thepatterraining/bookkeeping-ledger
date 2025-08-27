@@ -14,6 +14,9 @@ import lombok.experimental.SuperBuilder;
 @TableName("user_category")
 public class UserCategoryPO extends AbstractPO {
 
+    public UserCategoryPO() {
+        super();
+    }
     private String userNo;
     private String categoryNo;
     private String categoryName;

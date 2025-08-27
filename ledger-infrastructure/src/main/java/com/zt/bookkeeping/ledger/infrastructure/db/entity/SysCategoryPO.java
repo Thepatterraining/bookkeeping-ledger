@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.zt.bookkeeping.ledger.common.base.AbstractPO;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -12,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @TableName("sys_category")
+@NoArgsConstructor
 public class SysCategoryPO extends AbstractPO {
 
     private String categoryNo;

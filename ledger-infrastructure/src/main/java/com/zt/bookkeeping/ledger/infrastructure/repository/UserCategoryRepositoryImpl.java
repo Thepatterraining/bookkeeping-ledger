@@ -63,6 +63,7 @@ public class UserCategoryRepositoryImpl implements UserCategoryRepository {
                 .userNo(userCategoryPO.getUserNo())
                 .createTime(userCategoryPO.getCreateTime())
                 .updateTime(userCategoryPO.getUpdateTime())
+                .subCategories(new ArrayList<>())
                 .build();
         return userCategoryAgg;
     }

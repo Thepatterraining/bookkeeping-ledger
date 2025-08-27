@@ -14,7 +14,6 @@ public class CreateUserCategoryRequest {
     @NotNull
     private Integer categoryLevel;
 
-    @NotBlank
     private String transactionDesc;
 
     @NotBlank

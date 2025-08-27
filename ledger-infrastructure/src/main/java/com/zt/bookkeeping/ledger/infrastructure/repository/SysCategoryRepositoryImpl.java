@@ -13,6 +13,7 @@ import com.zt.bookkeeping.ledger.infrastructure.db.entity.UserCategoryPO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class SysCategoryRepositoryImpl implements SysCategoryRepository {
                 .parentNo(sysCategoryPO.getParentNo())
                 .createTime(sysCategoryPO.getCreateTime())
                 .updateTime(sysCategoryPO.getUpdateTime())
+                .subCategories(new ArrayList<>())
                 .build();
         return sysCategoryAgg;
     }

@@ -24,6 +24,7 @@ public class UserContextHolder {
             if (userNo == null) {
                 throw new RuntimeException("用户未登录");
             }
+            return userNo;
         }
         return null;
     }

@@ -21,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,8 +40,8 @@ public class CategoryQueryApplicationService {
             return Collections.emptyList();
         }
         List<CategoryListRes> sysCategoryList = sysCategoryAggList.stream()
-                .map(this::convertToLedgerListRes).filter(Objects::nonNull).collect(Collectors.toList());
-        List<CategoryListRes> userCategoryList = userCategoryAggList.stream().map(this::convertToLedgerListRes).filter(Objects::nonNull).collect(Collectors.toList());
+                .map(this::convertToLedgerListRes).filter(Objects::nonNull).toList();
+        List<CategoryListRes> userCategoryList = userCategoryAggList.stream().map(this::convertToLedgerListRes).filter(Objects::nonNull).toList();
         return Stream.concat(sysCategoryList.stream(), userCategoryList.stream()).collect(Collectors.toList());
     }
 
@@ -57,6 +55,7 @@ public class CategoryQueryApplicationService {
         res.setCategoryDesc(agg.getCategoryDesc());
         res.setCategoryLevel(agg.getCategoryLevel());
         res.setCategoryIcon(agg.getCategoryIcon());
+        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToLedgerListRes).collect(Collectors.toList()));
         return res;
     }
 
@@ -70,16 +69,66 @@ public class CategoryQueryApplicationService {
         res.setCategoryDesc(agg.getCategoryDesc());
         res.setCategoryLevel(agg.getCategoryLevel());
         res.setCategoryIcon(agg.getCategoryIcon());
+        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToLedgerListRes).collect(Collectors.toList()));
         return res;
     }
 
-    public PageRes<CategoryListRes> getAllUserCategories(QueryLedgerListRequest request) {
-        // 获取用户ID
-        String userNo = UserContextHolder.getCurrentUserNo();
+    private List<SysCategoryAgg> getAllSysCategoryAgg() {
         // 查询所有系统分类
         List<SysCategoryAgg> sysCategoryAggList = sysCategoryRepository.loadAll();
+        Map<String, SysCategoryAgg> categoryMap = new HashMap<>();
+        List<SysCategoryAgg> rootCategories = new ArrayList<>();
+
+        // 放入map
+        for (SysCategoryAgg category : sysCategoryAggList) {
+            categoryMap.put(category.getCategoryNo(), category);
+        }
+        // 将根分类放入根分类中
+        sysCategoryAggList.stream().filter(SysCategoryAgg::isParent).forEach(rootCategories::add);
+
+        // 将二级分类放入根分类中
+        sysCategoryAggList.stream().filter(category -> !category.isParent()).forEach(agg -> {
+            SysCategoryAgg parent = categoryMap.get(agg.getParentNo());
+            if (parent != null) {
+                parent.addSubCategory(agg);
+            }
+        });
+
+        return rootCategories;
+    }
+
+    private List<UserCategoryAgg> getUserCategoryAggList() {
+        // 获取用户ID
+        String userNo = UserContextHolder.getCurrentUserNo();
         // 查询所有用户分类
         List<UserCategoryAgg> userCategoryAggList = userCategoryRepository.loadListByUserNo(userNo);
+        Map<String, UserCategoryAgg> categoryMap = new HashMap<>();
+        List<UserCategoryAgg> rootCategories = new ArrayList<>();
+
+        // 将所有分类放入映射
+        for (UserCategoryAgg category : userCategoryAggList) {
+            categoryMap.put(category.getCategoryNo(), category);
+        }
+
+        // 将根分类放入根分类中
+        userCategoryAggList.stream().filter(UserCategoryAgg::isParent).forEach(rootCategories::add);
+
+        // 将二级分类放入根分类中
+        userCategoryAggList.stream().filter(category -> !category.isParent()).forEach(agg -> {
+            UserCategoryAgg parent = categoryMap.get(agg.getParentNo());
+            if (parent != null) {
+                parent.addSubCategory(agg);
+            }
+        });
+        return rootCategories;
+    }
+
+    public PageRes<CategoryListRes> getAllUserCategories(QueryLedgerListRequest request) {
+
+        // 查询所有系统分类
+        List<SysCategoryAgg> sysCategoryAggList = getAllSysCategoryAgg();
+        // 查询所有用户分类
+        List<UserCategoryAgg> userCategoryAggList = getUserCategoryAggList();
         // 组装返回
         PageRes<CategoryListRes> pageRes = new PageRes<>();
         pageRes.setPageNum(1L);

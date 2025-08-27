@@ -17,7 +17,6 @@ public class CreateTransactionRequest {
     @NotNull
     private Integer transactionType;
 
-    @NotBlank
     private String transactionDesc;
 
     @NotBlank

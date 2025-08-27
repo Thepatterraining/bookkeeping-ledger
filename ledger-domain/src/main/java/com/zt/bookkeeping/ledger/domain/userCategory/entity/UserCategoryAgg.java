@@ -1,6 +1,8 @@
 package com.zt.bookkeeping.ledger.domain.userCategory.entity;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.zt.bookkeeping.ledger.common.base.AbstractAgg;
+import com.zt.bookkeeping.ledger.domain.sysCategory.entity.SysCategoryAgg;
 import com.zt.bookkeeping.ledger.domain.transactionStatement.event.TransactionStatementCreatedEvent;
 import com.zt.bookkeeping.ledger.domain.userCategory.event.UserCategoryCreatedEvent;
 import lombok.Builder;
@@ -44,5 +46,12 @@ public class UserCategoryAgg extends AbstractAgg {
         registerDomainEvent(new UserCategoryCreatedEvent(this));
     }
 
+    public void addSubCategory(UserCategoryAgg userCategoryAgg) {
+        subCategories.add(userCategoryAgg);
+    }
+
+    public Boolean isParent() {
+        return StringUtils.isBlank(parentNo);
+    }
 
 }

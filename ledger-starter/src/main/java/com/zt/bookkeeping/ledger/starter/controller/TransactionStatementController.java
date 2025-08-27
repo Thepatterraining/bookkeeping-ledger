@@ -9,6 +9,7 @@ import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class TransactionStatementController {
     private TransactionStatementQueryApplicationService transactionStatementQueryApplicationService;
 
     @PostMapping("/create")
-    public Result<String> createTransaction(CreateTransactionRequest request) {
+    public Result<String> createTransaction(@RequestBody CreateTransactionRequest request) {
         String ledgerNo = transactionStatementCommandApplicationService.createTransactionStatement(request);
         return Result.success(ledgerNo);
     }

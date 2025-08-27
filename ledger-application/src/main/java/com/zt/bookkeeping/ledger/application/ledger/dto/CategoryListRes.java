@@ -3,6 +3,8 @@ package com.zt.bookkeeping.ledger.application.ledger.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class CategoryListRes {
@@ -11,4 +13,5 @@ public class CategoryListRes {
     private Integer categoryLevel;
     private String categoryDesc;
     private String categoryIcon;
+    private List<CategoryListRes> subCategoryList;
 }

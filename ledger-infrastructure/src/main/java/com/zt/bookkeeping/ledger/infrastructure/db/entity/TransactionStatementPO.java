@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 @TableName("transaction_statement")
 public class TransactionStatementPO extends AbstractPO {
 
+    public TransactionStatementPO() {
+        super();
+    }
+
     private String transactionStatementNo;
     private String ledgerNo;
     private Integer amount;

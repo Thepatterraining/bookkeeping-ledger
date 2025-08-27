@@ -102,7 +102,8 @@ public class LedgerRepositoryImpl implements LedgerRepository {
     public LedgerAgg load(String ledgerNo) {
         // 查询账本基本信息
         LambdaQueryWrapper<LedgerPO>  wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LedgerPO::getLedgerNo, ledgerNo);
+        wrapper.eq(LedgerPO::getLedgerNo, ledgerNo)
+                .last("limit 1");
         LedgerPO ledgerPO = ledgerMapper.selectOne(wrapper);
         if (ledgerPO == null) {
             return null;
@@ -110,7 +111,7 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         // 查询账本最新的预算信息
         LambdaQueryWrapper<LedgerBudgetPO> wrapperBudget = new LambdaQueryWrapper<>();
         wrapperBudget.eq(LedgerBudgetPO::getLedgerNo, ledgerPO.getLedgerNo())
-                .orderByDesc(LedgerBudgetPO::getLedgerNo)
+                .orderByDesc(LedgerBudgetPO::getId)
                 .last("limit 1");
         LedgerBudgetPO ledgerBudgetPO = ledgerBudgetMapper.selectOne(wrapperBudget);
         return toEntity(ledgerPO, ledgerBudgetPO);

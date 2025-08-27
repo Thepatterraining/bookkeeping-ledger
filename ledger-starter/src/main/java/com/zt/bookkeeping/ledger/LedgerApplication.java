@@ -1,5 +1,6 @@
 package com.zt.bookkeeping.ledger;
 
+import com.zt.bookkeeping.ledger.infrastructure.config.SnowFlakeGeneratorConfig;
 import com.zt.bookkeeping.ledger.infrastructure.config.TaskThreadPoolThirdCooperateConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @MapperScan({"com.zt.bookkeeping.ledger.**.db"})
-@EnableConfigurationProperties({TaskThreadPoolThirdCooperateConfig.class})
+@EnableConfigurationProperties({TaskThreadPoolThirdCooperateConfig.class, SnowFlakeGeneratorConfig.class})
 @EnableAsync
 public class LedgerApplication {
 

@@ -19,6 +19,10 @@ import java.time.LocalDateTime;
 @TableName("ledger_budget")
 public class LedgerBudgetPO extends AbstractPO {
 
+    public LedgerBudgetPO() {
+        super();
+    }
+
     private String ledgerNo;
     private Integer budgetAmount;
     private Integer usedAmount;

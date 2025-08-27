@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class AbstractPO {
 
+    public AbstractPO() {
+
+    }
+
     @TableId(type = IdType.AUTO)
     protected Long id;
     protected String createUser;

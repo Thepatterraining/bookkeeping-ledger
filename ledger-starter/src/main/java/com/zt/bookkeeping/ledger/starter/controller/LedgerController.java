@@ -34,7 +34,7 @@ public class LedgerController {
         return Result.success();
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public Result<PageRes<LedgerListRes>> deleteLedger(QueryLedgerListRequest request) {
         return Result.success(ledgerQueryApplicationService.getLedgerList(request));
     }

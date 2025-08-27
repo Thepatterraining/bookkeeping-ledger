@@ -1,5 +1,6 @@
 package com.zt.bookkeeping.ledger.domain.sysCategory.entity;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.zt.bookkeeping.ledger.common.base.AbstractAgg;
 import com.zt.bookkeeping.ledger.domain.userCategory.entity.UserCategoryAgg;
 import lombok.Builder;
@@ -30,5 +31,13 @@ public class SysCategoryAgg extends AbstractAgg {
     private Long id;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<UserCategoryAgg> subCategories = new ArrayList<>();
+    private List<SysCategoryAgg> subCategories;
+
+    public void addSubCategory(SysCategoryAgg sysCategoryAgg) {
+        subCategories.add(sysCategoryAgg);
+    }
+
+    public Boolean isParent() {
+        return StringUtils.isBlank(parentNo);
+    }
 }

@@ -8,9 +8,7 @@ import com.zt.bookkeeping.ledger.application.ledger.service.TransactionStatement
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/category")
@@ -23,12 +21,12 @@ public class CategoryController {
     private CategoryQueryApplicationService categoryQueryApplicationService;
 
     @PostMapping("/user/create")
-    public Result<String> createUserCategory(CreateUserCategoryRequest request) {
+    public Result<String> createUserCategory(@RequestBody CreateUserCategoryRequest request) {
         String ledgerNo = categoryCommandApplicationService.createCategory(request);
         return Result.success(ledgerNo);
     }
 
-    @PostMapping("/all/list")
+    @GetMapping("/all/list")
     public Result<PageRes<CategoryListRes>> getUserAllCategoryList(QueryLedgerListRequest request) {
         return Result.success(categoryQueryApplicationService.getAllUserCategories(request));
     }
