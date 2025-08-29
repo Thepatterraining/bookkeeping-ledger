@@ -56,8 +56,12 @@ public class TransactionStatementQueryApplicationService {
         String userNo = UserContextHolder.getCurrentUserNo();
         // 查询用户收支列表
         LambdaQueryWrapper<TransactionStatementPO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TransactionStatementPO::getCreateUser, userNo)
-                .between(TransactionStatementPO::getTransactionTime, request.getStartDate(), request.getEndDate());
+        wrapper = wrapper.eq(TransactionStatementPO::getLedgerNo, request.getLedgerNo())
+                .orderByDesc(TransactionStatementPO::getTransactionTime);
+        if (request.getStartDate() != null && request.getEndDate() != null) {
+            wrapper.between(TransactionStatementPO::getTransactionTime, request.getStartDate(), request.getEndDate());
+        }
+
         Page<TransactionStatementPO> pageList = transactionStatementMapper.selectPage(Page.of(request.getPage(), request.getSize()), wrapper);
 
         // 组装返回

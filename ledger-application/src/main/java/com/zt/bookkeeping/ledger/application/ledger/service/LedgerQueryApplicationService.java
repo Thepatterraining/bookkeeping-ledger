@@ -61,7 +61,8 @@ public class LedgerQueryApplicationService {
         String userNo = UserContextHolder.getCurrentUserNo();
         // 查询用户账本列表
         LambdaQueryWrapper<LedgerPO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LedgerPO::getOwnerNo, userNo);
+        wrapper.eq(LedgerPO::getOwnerNo, userNo)
+                .orderByDesc(LedgerPO::getUpdateTime);
         Page<LedgerPO> pageList = ledgerMapper.selectPage(Page.of(request.getPage(), request.getSize()), wrapper);
 
         // 组装返回

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class QueryTransactionListRequest {
     private Integer page;
     private Integer size;
+    private String ledgerNo;
     private LocalDate startDate;
     private LocalDate endDate;
 }

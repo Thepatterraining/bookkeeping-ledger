@@ -45,7 +45,8 @@ public class LedgerCommandApplicationService {
             throw new AggNotExistsException(ResultCode.LEDGER_ALREADY_EXISTS);
         }
         // 账本不存在则创建
-        LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), userNo, "", "");
+        LedgerAgg ledgerAgg = ledgerFactory.createLedgerAgg(request.getLedgerName(), userNo, request.getLedgerDesc(),
+                request.getLedgerImage());
         ledgerAgg.create();
 
         // 插入数据库

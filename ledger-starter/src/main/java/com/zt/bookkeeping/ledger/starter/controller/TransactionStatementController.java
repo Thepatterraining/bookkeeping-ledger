@@ -8,10 +8,7 @@ import com.zt.bookkeeping.ledger.application.ledger.service.TransactionStatement
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/transactionStatement")
@@ -29,7 +26,7 @@ public class TransactionStatementController {
         return Result.success(ledgerNo);
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public Result<PageRes<TransactionListRes>> deleteLedger(QueryTransactionListRequest request) {
         return Result.success(transactionStatementQueryApplicationService.getTransactionList(request));
     }

@@ -10,4 +10,8 @@ public class CreateLedgerRequest {
 
     @NotBlank
     private String ledgerName;
+
+    private String ledgerDesc;
+
+    private String ledgerImage;
 }
