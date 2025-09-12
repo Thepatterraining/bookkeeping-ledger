@@ -1,10 +1,11 @@
 package com.zt.bookkeeping.ledger.starter.controller;
 
-import com.zt.bookkeeping.ledger.application.ledger.dto.*;
-import com.zt.bookkeeping.ledger.application.ledger.service.LedgerCommandApplicationService;
-import com.zt.bookkeeping.ledger.application.ledger.service.LedgerQueryApplicationService;
-import com.zt.bookkeeping.ledger.application.ledger.service.TransactionStatementCommandApplicationService;
-import com.zt.bookkeeping.ledger.application.ledger.service.TransactionStatementQueryApplicationService;
+import com.zt.bookkeeping.ledger.application.transaction.dto.CreateTransactionRequest;
+import com.zt.bookkeeping.ledger.application.transaction.dto.DeleteTransactionRequest;
+import com.zt.bookkeeping.ledger.application.transaction.dto.QueryTransactionListRequest;
+import com.zt.bookkeeping.ledger.application.transaction.dto.TransactionListRes;
+import com.zt.bookkeeping.ledger.application.transaction.service.TransactionStatementCommandApplicationService;
+import com.zt.bookkeeping.ledger.application.transaction.service.TransactionStatementQueryApplicationService;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
 import jakarta.annotation.Resource;
@@ -27,7 +28,13 @@ public class TransactionStatementController {
     }
 
     @GetMapping("/list")
-    public Result<PageRes<TransactionListRes>> deleteLedger(QueryTransactionListRequest request) {
+    public Result<PageRes<TransactionListRes>> getTransactionList(QueryTransactionListRequest request) {
         return Result.success(transactionStatementQueryApplicationService.getTransactionList(request));
+    }
+
+    @DeleteMapping("/delete/{no}")
+    public Result<String> deleteTransaction(@PathVariable String no, @RequestBody DeleteTransactionRequest request) {
+        transactionStatementCommandApplicationService.deleteTransaction(no, request);
+        return Result.success();
     }
 }

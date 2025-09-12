@@ -36,6 +36,8 @@ public enum ResultCode {
     LEDGER_NOT_FOUND(1007, "账本不存在"),
     LEDGER_ALREADY_EXISTS(1008, "账本已存在"),
 
+    INVITATION_INVALID(1009, "邀请码无效"),
+    TRANSACTION_STATEMENT_NOT_FOUND(1010, "交易记录不存在"),
     ;
 
     private final Integer code;

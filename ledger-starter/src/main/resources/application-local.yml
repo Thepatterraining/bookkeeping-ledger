@@ -57,6 +57,27 @@ spring:
         metadata:
           version: ${project.version:0.0.1-SNAPSHOT}
 
+# Dubbo配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+    logger: slf4j
+  protocol:
+    name: tri
+    port: 50051
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr:localhost}?username=nacos&password=nacos
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace:}
+      group: ${spring.cloud.nacos.discovery.group:DEFAULT_GROUP}
+    # This will enable application-level service discovery only (the recommended service discovery method for Dubbo3).
+    # For users upgrading from Dubbo2.x, please set the value to 'all' for smooth migration.
+    register-mode: instance
+  consumer:
+    check: false
+    timeout: 3000
+    retries: 0
+
 #线程池配置参数
 task:
   pool:
@@ -67,8 +88,8 @@ task:
     threadNamePrefix: # 线程名
 
 mybatis-plus:
-  mapper-locations: classpath*:com/zt/bookkeeping/user/**/db/xml/*
-  type-aliases-package: com.zt.bookkeeping.user
+  mapper-locations: classpath*:com/zt/bookkeeping/ledger/**/db/xml/*
+  type-aliases-package: com.zt.bookkeeping.ledger
 
 # 雪花算法
 snowflake:

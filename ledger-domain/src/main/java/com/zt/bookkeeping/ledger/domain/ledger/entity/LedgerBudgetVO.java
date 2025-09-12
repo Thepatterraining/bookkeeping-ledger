@@ -17,4 +17,19 @@ public class LedgerBudgetVO {
     private LocalDate budgetDate;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Boolean isDeleted;
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    public void reduce(Integer amount) {
+        this.usedAmount += amount;
+        this.remainedAmount -= amount;
+    }
+
+    public void increase(Integer amount) {
+        this.usedAmount -= amount;
+        this.remainedAmount += amount;
+    }
 }

@@ -1,8 +1,10 @@
 package com.zt.bookkeeping.ledger.infrastructure.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.CategorySnapshotVO;
 import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.CategoryVO;
 import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.TransactionStatementAgg;
+import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.TransactionTypeVO;
 import com.zt.bookkeeping.ledger.domain.transactionStatement.repository.TransactionStatementRepository;
 import com.zt.bookkeeping.ledger.infrastructure.db.SysCategoryMapper;
 import com.zt.bookkeeping.ledger.infrastructure.db.TransactionStatementMapper;
@@ -61,8 +63,10 @@ public class TransactionStatementRepositoryImpl implements TransactionStatementR
                 .categoryNo(agg.getCategorySnapshot().getCategoryNo())
                 .categoryName(agg.getCategorySnapshot().getCategoryName())
                 .categoryType(agg.getCategorySnapshot().getSourceType())
+                .categoryIcon(agg.getCategorySnapshot().getCategoryIcon())
                 .createTime(agg.getCreateTime())
                 .updateTime(agg.getUpdateTime())
+                .isDeleted(agg.getDeleted())
                 .build();
     }
 
@@ -71,6 +75,31 @@ public class TransactionStatementRepositoryImpl implements TransactionStatementR
         // 更新交易流水信息
         TransactionStatementPO ledgerPO = this.toPO(agg);
         transactionStatementMapper.updateById(ledgerPO);
+    }
+
+    @Override
+    public TransactionStatementAgg load(String transactionStatementNo) {
+        LambdaQueryWrapper<TransactionStatementPO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TransactionStatementPO::getTransactionStatementNo, transactionStatementNo)
+                .last("limit 1");
+        TransactionStatementPO transactionStatementPO = transactionStatementMapper.selectOne(queryWrapper);
+        return this.toAgg(transactionStatementPO);
+    }
+
+    private TransactionStatementAgg toAgg(TransactionStatementPO po) {
+        return TransactionStatementAgg.builder()
+                .id(po.getId())
+                .amount(po.getAmount())
+                .transactionStatementNo(po.getTransactionStatementNo())
+                .ledgerNo(po.getLedgerNo())
+                .transactionType(TransactionTypeVO.of(po.getTransactionType()))
+                .transactionTime(po.getTransactionTime())
+                .transactionDesc(po.getTransactionDesc())
+                .transactionStatus(po.getTransactionStatus())
+                .categorySnapshot(new CategorySnapshotVO(po.getCategoryName(), po.getCategoryNo(), po.getCategoryType(), po.getCategoryIcon()))
+                .createTime(po.getCreateTime())
+                .updateTime(po.getUpdateTime())
+                .build();
     }
 
 

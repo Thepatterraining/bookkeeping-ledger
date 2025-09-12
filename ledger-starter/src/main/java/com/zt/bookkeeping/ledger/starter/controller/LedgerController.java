@@ -5,9 +5,10 @@ import com.zt.bookkeeping.ledger.application.ledger.service.LedgerCommandApplica
 import com.zt.bookkeeping.ledger.application.ledger.service.LedgerQueryApplicationService;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.common.res.Result;
-import com.zt.bookkeeping.ledger.domain.ledger.repository.LedgerRepository;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/ledger")
@@ -26,19 +27,42 @@ public class LedgerController {
     }
 
     @PostMapping("/update")
-    public Result<String> updateLedger(UpdateLedgerRequest request) {
+    public Result<String> updateLedger(@RequestBody UpdateLedgerRequest request) {
         ledgerCommandApplicationService.updateLedger(request);
         return Result.success();
     }
 
+    @DeleteMapping()
+    public Result<String> deleteLedger(@RequestBody DeleteLedgerRequest request) {
+        ledgerCommandApplicationService.deleteLedger(request.getLedgerNo());
+        return Result.success();
+    }
+
     @GetMapping("/list")
-    public Result<PageRes<LedgerListRes>> deleteLedger(QueryLedgerListRequest request) {
+    public Result<PageRes<LedgerListRes>> getLedgerList(QueryLedgerListRequest request) {
         return Result.success(ledgerQueryApplicationService.getLedgerList(request));
     }
 
+    @GetMapping("/detail")
+    public Result<LedgerDetailRes> getLedgerDetail(QueryLedgerRequest request) {
+        return Result.success(ledgerQueryApplicationService.getLedger(request));
+    }
+
     @PostMapping("/update/budget")
-    public Result<String> updateLedgerBudget(UpdateLedgerBudgetRequest request) {
+    public Result<String> updateLedgerBudget(@RequestBody UpdateLedgerBudgetRequest request) {
         ledgerCommandApplicationService.updateLedgerBudget(request);
         return Result.success();
+    }
+
+    @PostMapping("/join")
+    public Result<String> joinLedger(@RequestBody JoinLedgerRequest request) {
+        ledgerCommandApplicationService.joinLedger(request);
+        return Result.success();
+    }
+
+    @GetMapping("/memberList")
+    public Result<List<LedgerMemberListRes>> memberList(QueryLedgerMemberListRequest request) {
+        List<LedgerMemberListRes> memberList = ledgerQueryApplicationService.getMemberList(request);
+        return Result.success(memberList);
     }
 }

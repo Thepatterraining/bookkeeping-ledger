@@ -45,14 +45,12 @@ public class TransactionStatementFactoryImpl implements TransactionStatementFact
         if (categoryType == 1) {
             // 系统分类
             SysCategoryAgg sysCategoryAgg = sysCategoryRepository.load(categoryNo);
-            category = new CategorySnapshotVO(sysCategoryAgg.getCategoryName(), sysCategoryAgg.getCategoryNo(), categoryType);
+            category = new CategorySnapshotVO(sysCategoryAgg.getCategoryName(), sysCategoryAgg.getCategoryNo(), categoryType, sysCategoryAgg.getCategoryIcon());
         } else {
             // 用户分类
             UserCategoryAgg userCategoryAgg = userCategoryRepository.load(categoryNo, userNo);
-            category = new CategorySnapshotVO(userCategoryAgg.getCategoryName(), userCategoryAgg.getCategoryNo(), categoryType);
+            category = new CategorySnapshotVO(userCategoryAgg.getCategoryName(), userCategoryAgg.getCategoryNo(), categoryType, userCategoryAgg.getCategoryIcon());
         }
-//        CategoryVO category = transactionStatementRepository.loadCategory(
-//                categoryNo);
         // 生成ledger no
         String no = snowFlakeGenerator.nextId("transaction");
         return TransactionStatementAgg.builder()

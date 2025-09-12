@@ -1,18 +1,14 @@
-package com.zt.bookkeeping.ledger.application.ledger.service;
+package com.zt.bookkeeping.ledger.application.transaction.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zt.bookkeeping.ledger.application.ledger.dto.LedgerListRes;
-import com.zt.bookkeeping.ledger.application.ledger.dto.QueryLedgerListRequest;
-import com.zt.bookkeeping.ledger.application.ledger.dto.QueryTransactionListRequest;
-import com.zt.bookkeeping.ledger.application.ledger.dto.TransactionListRes;
+import com.zt.bookkeeping.ledger.application.transaction.dto.QueryTransactionListRequest;
+import com.zt.bookkeeping.ledger.application.transaction.dto.TransactionListRes;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
-import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
-import com.zt.bookkeeping.ledger.infrastructure.db.LedgerMapper;
 import com.zt.bookkeeping.ledger.infrastructure.db.TransactionStatementMapper;
-import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerPO;
 import com.zt.bookkeeping.ledger.infrastructure.db.entity.TransactionStatementPO;
 import com.zt.bookkeeping.ledger.infrastructure.util.LocalDateTimeUtil;
+import com.zt.bookkeeping.ledger.infrastructure.util.MoneyUtil;
 import com.zt.bookkeeping.ledger.infrastructure.util.UserContextHolder;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +41,11 @@ public class TransactionStatementQueryApplicationService {
         TransactionListRes res = new TransactionListRes();
         res.setNo(po.getTransactionStatementNo());
         res.setCategoryName(po.getCategoryName());
+        res.setCategoryIcon(po.getCategoryIcon());
         res.setDesc(po.getTransactionDesc());
-        res.setAmount(po.getAmount());
+        res.setAmount(MoneyUtil.fen2Yuan(po.getAmount()));
         res.setTime(LocalDateTimeUtil.format(po.getTransactionTime()));
+        res.setTransactionType(po.getTransactionType());
         return res;
     }
 
@@ -57,6 +55,7 @@ public class TransactionStatementQueryApplicationService {
         // 查询用户收支列表
         LambdaQueryWrapper<TransactionStatementPO> wrapper = new LambdaQueryWrapper<>();
         wrapper = wrapper.eq(TransactionStatementPO::getLedgerNo, request.getLedgerNo())
+                .eq(TransactionStatementPO::getIsDeleted, false)
                 .orderByDesc(TransactionStatementPO::getTransactionTime);
         if (request.getStartDate() != null && request.getEndDate() != null) {
             wrapper.between(TransactionStatementPO::getTransactionTime, request.getStartDate(), request.getEndDate());

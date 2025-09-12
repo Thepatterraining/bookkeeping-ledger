@@ -13,4 +13,6 @@ public class LedgerListRes  {
     private String ledgerImage;
     private String createTime;
     private String updateTime;
+    private String joinTime;
+    private String role;
 }

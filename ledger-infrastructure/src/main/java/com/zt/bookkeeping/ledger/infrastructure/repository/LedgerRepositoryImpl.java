@@ -1,18 +1,29 @@
 package com.zt.bookkeeping.ledger.infrastructure.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
-import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerBudgetVO;
-import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerStatusVO;
+import com.zt.bookkeeping.ledger.domain.ledger.entity.*;
+import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
 import com.zt.bookkeeping.ledger.domain.ledger.repository.LedgerRepository;
+import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.TransactionTypeVO;
 import com.zt.bookkeeping.ledger.infrastructure.db.LedgerBudgetMapper;
 import com.zt.bookkeeping.ledger.infrastructure.db.LedgerMapper;
+import com.zt.bookkeeping.ledger.infrastructure.db.LedgerMemberMapper;
+import com.zt.bookkeeping.ledger.infrastructure.db.TransactionStatementMapper;
 import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerBudgetPO;
+import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerMemberPO;
 import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerPO;
+import com.zt.bookkeeping.ledger.infrastructure.db.entity.TransactionStatementPO;
+import com.zt.bookkeeping.ledger.infrastructure.util.LocalDateTimeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class LedgerRepositoryImpl implements LedgerRepository {
@@ -22,6 +33,15 @@ public class LedgerRepositoryImpl implements LedgerRepository {
 
     @Resource
     private LedgerBudgetMapper ledgerBudgetMapper;
+
+    @Resource
+    private LedgerMemberMapper ledgerMemberMapper;
+
+    @Resource
+    private TransactionStatementMapper transactionStatementMapper;
+
+    @Resource
+    private LedgerFactory ledgerFactory;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -33,6 +53,17 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         // 插入账本预算信息
         LedgerBudgetPO ledgerBudgetPO = toLedgerBudgetPO(ledgerAgg.getLastLedgerBudget());
         ledgerBudgetMapper.insert(ledgerBudgetPO);
+
+        // 插入成员信息
+        saveMemberSet(ledgerAgg.getMemberSet());
+    }
+
+    private void insertMember(Set<LedgerMemberEntity> memberSet) {
+        LedgerMemberEntity memberEntity = memberSet.stream().findFirst().orElse(null);
+        if (memberEntity == null) {
+            return;
+        }
+        ledgerMemberMapper.insert(toMemberPO(memberEntity));
     }
 
     private LedgerPO toPO(LedgerAgg userAgg) {
@@ -44,6 +75,7 @@ public class LedgerRepositoryImpl implements LedgerRepository {
                 .ownerNo(userAgg.getOwnerNo())
                 .ledgerDesc(userAgg.getLedgerDesc())
                 .ledgerImage(userAgg.getLedgerImage())
+                .isDeleted(userAgg.getIsDeleted())
                 .build();
     }
 
@@ -55,6 +87,19 @@ public class LedgerRepositoryImpl implements LedgerRepository {
                 .usedAmount(ledgerBudgetVO.getUsedAmount())
                 .remainedAmount(ledgerBudgetVO.getRemainedAmount())
                 .budgetDate(ledgerBudgetVO.getBudgetDate())
+                .isDeleted(ledgerBudgetVO.getIsDeleted())
+                .build();
+    }
+
+    private LedgerMemberPO toMemberPO(LedgerMemberEntity memberEntity) {
+        return LedgerMemberPO.builder()
+                .id(memberEntity.getId())
+                .ledgerNo(memberEntity.getLedgerNo())
+                .userNo(memberEntity.getUserNo())
+                .role(memberEntity.getRole().getCode())
+                .joinTime(memberEntity.getJoinTime())
+                .status(memberEntity.getStatus().getCode())
+                .isDeleted(memberEntity.getIsDeleted())
                 .build();
     }
 
@@ -67,10 +112,10 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         if (ledgerPO == null) {
             return null;
         }
-        return toEntity(ledgerPO, null);
+        return toEntity(ledgerPO, null, null, 0L, 0L);
     }
 
-    private LedgerAgg toEntity(LedgerPO ledgerPO, LedgerBudgetPO ledgerBudgetPO) {
+    private LedgerAgg toEntity(LedgerPO ledgerPO, LedgerBudgetPO ledgerBudgetPO, List<LedgerMemberPO> memberList, Long income, Long expense) {
         LedgerAgg ledgerAgg = LedgerAgg.builder()
                 .id(ledgerPO.getId())
                 .ledgerName(ledgerPO.getLedgerName())
@@ -95,6 +140,25 @@ public class LedgerRepositoryImpl implements LedgerRepository {
                     .build();
             ledgerAgg.setLastLedgerBudget(ledgerBudgetVO);
         }
+        if (!CollectionUtils.isEmpty(memberList)) {
+            Set<LedgerMemberEntity> memberSet = new HashSet<>();
+            memberList.forEach(member -> {
+                LedgerMemberEntity memberEntity = LedgerMemberEntity.builder()
+                        .id(member.getId())
+                        .ledgerNo(member.getLedgerNo())
+                        .userNo(member.getUserNo())
+                        .joinTime(member.getJoinTime())
+                        .role(LedgerMemberRoleVO.of(member.getRole()))
+                        .status(LedgerMemberStatusVO.of(member.getStatus()))
+                        .createTime(member.getCreateTime())
+                        .updateTime(member.getUpdateTime())
+                        .build();
+                memberSet.add(memberEntity);
+            });
+            ledgerAgg.setMemberSet(memberSet);
+        }
+        LedgerSummaryVO ledgerSummaryVO = ledgerFactory.createLedgerSummary(income, expense);
+        ledgerAgg.setLastLedgerSummary(ledgerSummaryVO);
         return ledgerAgg;
     }
 
@@ -114,7 +178,18 @@ public class LedgerRepositoryImpl implements LedgerRepository {
                 .orderByDesc(LedgerBudgetPO::getId)
                 .last("limit 1");
         LedgerBudgetPO ledgerBudgetPO = ledgerBudgetMapper.selectOne(wrapperBudget);
-        return toEntity(ledgerPO, ledgerBudgetPO);
+
+        // 加载成员信息
+        LambdaQueryWrapper<LedgerMemberPO> wrapperMember = new LambdaQueryWrapper<>();
+        wrapperMember.eq(LedgerMemberPO::getLedgerNo, ledgerPO.getLedgerNo())
+                .orderByDesc(LedgerMemberPO::getId)
+                .last("limit 10");
+        List<LedgerMemberPO> memberList = ledgerMemberMapper.selectList(wrapperMember);
+
+        // 加载汇总信息
+        Long incomeAmount = transactionStatementMapper.getSummaryAmount(ledgerPO.getLedgerNo(), TransactionTypeVO.INCOME.getCode());
+        Long expenditureAmount = transactionStatementMapper.getSummaryAmount(ledgerPO.getLedgerNo(), TransactionTypeVO.EXPENDITURE.getCode());
+        return toEntity(ledgerPO, ledgerBudgetPO, memberList, incomeAmount, expenditureAmount);
     }
 
     @Override
@@ -125,7 +200,35 @@ public class LedgerRepositoryImpl implements LedgerRepository {
 
         // 插入账本预算信息
         LedgerBudgetPO ledgerBudgetPO = toLedgerBudgetPO(ledgerAgg.getLastLedgerBudget());
-        ledgerBudgetMapper.updateById(ledgerBudgetPO);
+        // 查询预算是否存在，决定插入还是更新
+        LambdaQueryWrapper<LedgerBudgetPO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LedgerBudgetPO::getLedgerNo, ledgerBudgetPO.getLedgerNo())
+                .eq(LedgerBudgetPO::getBudgetDate, LocalDateTimeUtil.format(ledgerBudgetPO.getBudgetDate(), LocalDateTimeUtil.DATE_FORMATTER_MONTH_ONE));
+        LedgerBudgetPO budget = ledgerBudgetMapper.selectOne(wrapper);
+        if (budget == null) {
+            ledgerBudgetMapper.insert(ledgerBudgetPO);
+        } else {
+            ledgerBudgetPO.setId(budget.getId());
+            ledgerBudgetPO.setUsedAmount(budget.getUsedAmount());
+            ledgerBudgetPO.setRemainedAmount(ledgerBudgetPO.getBudgetAmount() - ledgerBudgetPO.getUsedAmount());
+            ledgerBudgetMapper.updateById(ledgerBudgetPO);
+        }
+
+        // 更新成员信息
+        saveMemberSet(ledgerAgg.getMemberSet());
+    }
+
+    private void saveMemberSet(Set<LedgerMemberEntity> memberSet) {
+        if (CollectionUtils.isEmpty(memberSet)) {
+            return;
+        }
+        memberSet.forEach(member -> {
+            if (member.getId() == null) {
+                ledgerMemberMapper.insert(toMemberPO(member));
+            } else {
+                ledgerMemberMapper.updateById(toMemberPO(member));
+            }
+        });
     }
 
     public Boolean exists(String ledgerNo) {

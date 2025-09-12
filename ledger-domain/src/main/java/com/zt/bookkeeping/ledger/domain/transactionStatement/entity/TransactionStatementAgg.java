@@ -29,6 +29,8 @@ public class TransactionStatementAgg extends AbstractAgg {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
+    private Boolean deleted;
+
     public void create() {
         LocalDateTime now = LocalDateTime.now();
         this.setCreateTime(now);
@@ -36,6 +38,13 @@ public class TransactionStatementAgg extends AbstractAgg {
         this.setTransactionTime(now);
 
         // 注册交易流水已创建事件
+        registerDomainEvent(new TransactionStatementCreatedEvent(this));
+    }
+
+    public void delete() {
+        deleted = true;
+        updateTime = LocalDateTime.now();
+        // 注册交易流水已删除事件
         registerDomainEvent(new TransactionStatementCreatedEvent(this));
     }
 }

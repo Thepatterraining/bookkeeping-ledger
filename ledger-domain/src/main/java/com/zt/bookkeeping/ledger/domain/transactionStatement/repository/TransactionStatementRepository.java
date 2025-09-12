@@ -11,4 +11,6 @@ public interface TransactionStatementRepository {
     void insert(CategoryVO categoryVO);
 
     void update(TransactionStatementAgg transactionStatementAgg);
+
+    TransactionStatementAgg load(String transactionStatementNo);
 }

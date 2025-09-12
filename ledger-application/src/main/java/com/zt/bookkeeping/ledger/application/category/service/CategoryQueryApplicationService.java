@@ -1,20 +1,12 @@
-package com.zt.bookkeeping.ledger.application.ledger.service;
+package com.zt.bookkeeping.ledger.application.category.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zt.bookkeeping.ledger.application.ledger.dto.CategoryListRes;
-import com.zt.bookkeeping.ledger.application.ledger.dto.LedgerListRes;
+import com.zt.bookkeeping.ledger.application.category.dto.CategoryListRes;
 import com.zt.bookkeeping.ledger.application.ledger.dto.QueryLedgerListRequest;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
-import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
 import com.zt.bookkeeping.ledger.domain.sysCategory.entity.SysCategoryAgg;
 import com.zt.bookkeeping.ledger.domain.sysCategory.repository.SysCategoryRepository;
 import com.zt.bookkeeping.ledger.domain.userCategory.entity.UserCategoryAgg;
 import com.zt.bookkeeping.ledger.domain.userCategory.repository.UserCategoryRepository;
-import com.zt.bookkeeping.ledger.domain.userCategory.service.UserCategoryDomainService;
-import com.zt.bookkeeping.ledger.infrastructure.db.LedgerMapper;
-import com.zt.bookkeeping.ledger.infrastructure.db.entity.LedgerPO;
-import com.zt.bookkeeping.ledger.infrastructure.util.LocalDateTimeUtil;
 import com.zt.bookkeeping.ledger.infrastructure.util.UserContextHolder;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

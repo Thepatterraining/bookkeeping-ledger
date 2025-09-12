@@ -21,4 +21,12 @@ public class TransactionStatementDomainService {
             transactionStatementRepository.update(transactionStatementAgg);
         }
     }
+
+    public TransactionStatementAgg findByNo(String transactionStatementNo) {
+        return transactionStatementRepository.load(transactionStatementNo);
+    }
+
+    public void delete(TransactionStatementAgg transactionStatementAgg) {
+        transactionStatementRepository.update(transactionStatementAgg);
+    }
 }

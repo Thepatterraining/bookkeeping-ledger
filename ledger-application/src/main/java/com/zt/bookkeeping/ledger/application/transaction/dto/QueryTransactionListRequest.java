@@ -1,4 +1,4 @@
-package com.zt.bookkeeping.ledger.application.ledger.dto;
+package com.zt.bookkeeping.ledger.application.transaction.dto;
 
 import lombok.Getter;
 import lombok.Setter;

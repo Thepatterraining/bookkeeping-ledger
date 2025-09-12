@@ -1,11 +1,9 @@
-package com.zt.bookkeeping.ledger.application.ledger.dto;
+package com.zt.bookkeeping.ledger.application.category.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter

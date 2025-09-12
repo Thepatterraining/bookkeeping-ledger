@@ -31,5 +31,6 @@ public class TransactionStatementPO extends AbstractPO {
     private String categoryNo;
     private String categoryName;
     private Integer categoryType; // 1 系统 2 用户
+    private String categoryIcon;
 
 }

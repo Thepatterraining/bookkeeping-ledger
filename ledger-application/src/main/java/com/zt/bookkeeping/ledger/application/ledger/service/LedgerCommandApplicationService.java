@@ -1,14 +1,20 @@
 package com.zt.bookkeeping.ledger.application.ledger.service;
 
 import com.zt.bookkeeping.ledger.application.ledger.dto.CreateLedgerRequest;
+import com.zt.bookkeeping.ledger.application.ledger.dto.JoinLedgerRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerBudgetRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
 import com.zt.bookkeeping.ledger.common.base.DomainEvent;
 import com.zt.bookkeeping.ledger.common.enums.ResultCode;
 import com.zt.bookkeeping.ledger.domain.exception.AggNotExistsException;
 import com.zt.bookkeeping.ledger.domain.exception.DomainException;
+import com.zt.bookkeeping.ledger.domain.invitation.entity.InvitationAgg;
+import com.zt.bookkeeping.ledger.domain.invitation.entity.InvitationCodeVO;
+import com.zt.bookkeeping.ledger.domain.invitation.service.InvitationDomainService;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerBudgetVO;
+import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerMemberEntity;
+import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerMemberRoleVO;
 import com.zt.bookkeeping.ledger.domain.ledger.event.LedgerUpdatedEvent;
 import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
 import com.zt.bookkeeping.ledger.domain.ledger.service.LedgerDomainService;
@@ -34,6 +40,18 @@ public class LedgerCommandApplicationService {
 
     @Resource
     private LedgerFactory ledgerFactory;
+
+    @Resource
+    private InvitationDomainService invitationDomainService;
+
+    public void deleteLedger(String ledgerNo) {
+        LedgerAgg ledgerAgg = ledgerDomainService.findByNo(ledgerNo);
+        if (ledgerAgg == null) {
+            throw new AggNotExistsException(ResultCode.LEDGER_NOT_FOUND);
+        }
+        ledgerAgg.delete();
+        ledgerDomainService.save(ledgerAgg);
+    }
 
     public String createLedger(CreateLedgerRequest request) {
         // 获取用户ID
@@ -84,6 +102,29 @@ public class LedgerCommandApplicationService {
         // 账本存在则更新
         LedgerBudgetVO ledgerBudget = ledgerFactory.createLedgerBudget(request.getLedgerNo(), request.getBudgetAmount(), request.getBudgetDate());
         ledgerAgg.updateBudget(ledgerBudget);
+        ledgerDomainService.save(ledgerAgg);
+
+        // 获取注册的事件进行发布
+        List<DomainEvent> domainEventList = ledgerAgg.getDomainEvents();
+        eventPublisher.publishEvent(domainEventList);
+    }
+
+    public void joinLedger(JoinLedgerRequest request) {
+        String userNo = UserContextHolder.getCurrentUserNo();
+        // 1. 使用邀请码
+        invitationDomainService.useInvitationCode(request.getInvitationCode(), userNo);
+
+        // 查询账本信息
+        InvitationAgg invitationAgg = invitationDomainService.loadByCode(
+                new InvitationCodeVO(request.getInvitationCode()));
+        LedgerAgg ledgerAgg = ledgerDomainService.findByNo(invitationAgg.getLedgerNo());
+
+        // 2. 插入成员信息
+        LedgerMemberEntity ledgerMember = ledgerFactory.createLedgerMember(
+                ledgerAgg.getLedgerNo(), userNo, LedgerMemberRoleVO.MEMBER);
+        ledgerAgg.addMember(ledgerMember);
+
+        // 3. 保存账本信息
         ledgerDomainService.save(ledgerAgg);
 
         // 获取注册的事件进行发布

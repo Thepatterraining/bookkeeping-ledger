@@ -32,6 +32,7 @@
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
 		<spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
 		<project.version>0.0.1-SNAPSHOT</project.version>
+		<dubbo.version>3.2.10</dubbo.version>
 	</properties>
 
 	<modules>
@@ -75,6 +76,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- Dubbo依赖管理 -->
+			<dependency>
+				<groupId>org.apache.dubbo</groupId>
+				<artifactId>dubbo-bom</artifactId>
+				<version>${dubbo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -103,6 +112,12 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.30</version>
+		</dependency>
+
+		<!-- Jakarta Servlet API -->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 		</dependency>
 
 		<!-- 引入jwt-->
@@ -138,6 +153,17 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+
+		<!-- Dubbo依赖 -->
+		<dependency>
+			<groupId>org.apache.dubbo</groupId>
+			<artifactId>dubbo-spring-boot-starter</artifactId>
+		</dependency>
+		<!-- Dubbo与Nacos集成 -->
+		<dependency>
+			<groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
 		</dependency>
 	</dependencies>
 

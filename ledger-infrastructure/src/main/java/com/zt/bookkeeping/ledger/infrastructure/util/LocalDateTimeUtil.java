@@ -14,6 +14,8 @@ public class LocalDateTimeUtil {
 
     public static String DATE_FORMATTER_yMd = "yyyyMMdd";
 
+    public static String DATE_FORMATTER_MONTH_ONE = "yyyy-MM-01";
+
     public static Integer ZONE_OFFSET_HOURS = 8;
 
     public static String format(LocalDateTime time) {

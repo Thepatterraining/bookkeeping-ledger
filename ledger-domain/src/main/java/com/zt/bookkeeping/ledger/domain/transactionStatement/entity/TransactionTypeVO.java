@@ -22,8 +22,8 @@ public class TransactionTypeVO {
         return transactionType.getCode();
     }
 
-    public TransactionTypeEnum getStatusEnum() {
-        return transactionType;
+    public Boolean isExpenditure() {
+        return TransactionTypeEnum.EXPENDITURE.equals(transactionType);
     }
 
     @Override

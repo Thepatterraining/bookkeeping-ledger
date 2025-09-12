@@ -22,8 +22,8 @@ public class LedgerStatusVO {
         return status.getCode();
     }
 
-    public LedgerStatusEnum getStatusEnum() {
-        return status;
+    public String getLabel() {
+        return status.getLabel();
     }
 
     @Override

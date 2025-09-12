@@ -1,11 +1,7 @@
-package com.zt.bookkeeping.ledger.application.ledger.service;
+package com.zt.bookkeeping.ledger.application.category.service;
 
-import com.zt.bookkeeping.ledger.application.ledger.dto.CreateUserCategoryRequest;
+import com.zt.bookkeeping.ledger.application.category.dto.CreateUserCategoryRequest;
 import com.zt.bookkeeping.ledger.common.base.DomainEvent;
-import com.zt.bookkeeping.ledger.common.enums.ResultCode;
-import com.zt.bookkeeping.ledger.domain.exception.AggNotExistsException;
-import com.zt.bookkeeping.ledger.domain.ledger.entity.LedgerAgg;
-import com.zt.bookkeeping.ledger.domain.transactionStatement.entity.CategoryVO;
 import com.zt.bookkeeping.ledger.domain.userCategory.entity.UserCategoryAgg;
 import com.zt.bookkeeping.ledger.domain.userCategory.factory.UserCategoryFactory;
 import com.zt.bookkeeping.ledger.domain.userCategory.service.UserCategoryDomainService;
