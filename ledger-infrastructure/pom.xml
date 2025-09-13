@@ -65,6 +65,13 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
+
+		<!--		引入用户服务-->
+		<dependency>
+			<groupId>com.zt.bookkeeping.user</groupId>
+			<artifactId>user-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -165,6 +165,45 @@
 			<groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
 		</dependency>
+<!--		引入用户服务-->
+		<dependency>
+			<groupId>com.zt.bookkeeping.user</groupId>
+			<artifactId>user-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.0</version> <!-- 当前最新稳定版 -->
+				<configuration>
+					<source>21</source>
+					<target>21</target>
+					<!-- 关键：让注解处理器能访问编译器内部 -->
+					<fork>true</fork>
+					<compilerArgs>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+		<!-- 正式版仓库 -->
+		<repository>
+			<id>2589020-snapshot-ROjo3g</id>
+			<url>https://maven.aliyun.com/repository/releases/repository/maven-releases/</url>
+		</repository>
+		<!-- 快照版仓库 -->
+		<snapshotRepository>
+			<id>2589020-snapshot-ROjo3g</id>
+			<url>https://packages.aliyun.com/68c4d6e13b25a962b4391e50/maven/2589020-snapshot-rojo3g</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>

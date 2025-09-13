@@ -3,8 +3,6 @@ package com.zt.bookkeeping.ledger.application.ledger.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zt.bookkeeping.ledger.application.ledger.dto.*;
-import com.zt.bookkeeping.ledger.common.api.UserService;
-import com.zt.bookkeeping.ledger.common.dto.UserDTO;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.domain.ledger.bo.UserInfoBO;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.*;
