@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账软件系统架构图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1d1d1f;
+            line-height: 1.4;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+            background: linear-gradient(135deg, #007aff, #34c759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .architecture-container {
+            display: flex;
+            gap: 15px;
+            min-height: 600px;
+        }
+
+        /* 左侧层级标签 */
+        .layer-labels {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .layer-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* 右侧架构层 */
+        .architecture-layers {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .architecture-layer {
+            flex: 1;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .layer-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .layer-content {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 12px;
+            min-height: 100px;
+        }
+
+        .module-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 160px;
+            max-width: 220px;
+            flex: 1;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1d1d1f;
+        }
+
+        .module-subtitle {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .module-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-item {
+            padding: 2px 0;
+            font-size: 11px;
+            color: #515154;
+            position: relative;
+            padding-left: 12px;
+            line-height: 1.3;
+        }
+
+        .feature-item:before {
+            content: "+";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        /* 不同层级的颜色主题 */
+        .frontend-layer {
+            background: linear-gradient(135deg, #a8d8ea, #7fb3d3);
+        }
+        .frontend-label {
+            background: linear-gradient(135deg, #a8d8ea, #7fb3d3);
+        }
+        .frontend-layer .feature-item:before {
+            color: #2980b9;
+        }
+
+        .gateway-layer {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+        }
+        .gateway-label {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+        }
+        .gateway-layer .feature-item:before {
+            color: #27ae60;
+        }
+
+        .application-layer {
+            background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+        }
+        .application-label {
+            background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+        }
+        .application-layer .feature-item:before {
+            color: #f39c12;
+        }
+
+        .domain-layer {
+            background: linear-gradient(135deg, #ffcdd2, #f8bbd9);
+        }
+        .domain-label {
+            background: linear-gradient(135deg, #ffcdd2, #f8bbd9);
+        }
+        .domain-layer .feature-item:before {
+            color: #e74c3c;
+        }
+
+        .infrastructure-layer {
+            background: linear-gradient(135deg, #e1bee7, #ce93d8);
+        }
+        .infrastructure-label {
+            background: linear-gradient(135deg, #e1bee7, #ce93d8);
+        }
+        .infrastructure-layer .feature-item:before {
+            color: #9b59b6;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .module-card {
+                min-width: 140px;
+                max-width: 180px;
+            }
+            .module-title {
+                font-size: 14px;
+            }
+            .feature-item {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            .architecture-container {
+                flex-direction: column;
+            }
+            .layer-labels {
+                width: 100%;
+                flex-direction: row;
+                height: 60px;
+            }
+            .layer-label {
+                writing-mode: horizontal-tb;
+                text-orientation: initial;
+            }
+            .layer-content {
+                flex-direction: column;
+                height: auto;
+            }
+            .module-card {
+                max-width: 100%;
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="architecture-container">
+            <!-- 左侧层级标签 -->
+            <div class="layer-labels">
+                <div class="layer-label gateway-label">网关层</div>
+                <div class="layer-label application-label">应用层</div>
+                <div class="layer-label domain-label">领域层</div>
+                <div class="layer-label infrastructure-label">基础设施</div>
+            </div>
+
+            <!-- 右侧架构层 -->
+            <div class="architecture-layers">
+                <!-- 网关层 -->
+                <div class="architecture-layer gateway-layer">
+                    <h2 class="layer-title">API网关</h2>
+                    <div class="layer-content">
+                        <div class="module-card">
+                            <div class="module-title">路由转发</div>
+                            <div class="module-subtitle">Gateway</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">认证鉴权</div>
+                            <div class="module-subtitle">JWT/OAuth2</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">限流熔断</div>
+                            <div class="module-subtitle">Sentinel</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">日志监控</div>
+                            <div class="module-subtitle">Logging</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 应用层 -->
+                <div class="architecture-layer application-layer">
+                    <h2 class="layer-title">微服务应用</h2>
+                    <div class="layer-content">
+                        <div class="module-card">
+                            <div class="module-title">账本服务</div>
+                            <div class="module-subtitle">LedgerCommandApplicationService</div>
+                            <ul class="module-features">
+                                <li class="feature-item">createLedger()</li>
+                                <li class="feature-item">deleteLedger()</li>
+                                <li class="feature-item">updateLedger()</li>
+                                <li class="feature-item">updateLedgerBudget()</li>
+                                <li class="feature-item">joinLedger()</li>
+                            </ul>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">记录服务</div>
+                            <div class="module-subtitle">TransactionStatementCommandApplicationService</div>
+                            <ul class="module-features">
+                                <li class="feature-item">createTransactionStatement()</li>
+                                <li class="feature-item">deleteTransaction()</li>
+                                <li class="feature-item">getTransactionList()</li>
+                            </ul>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">分类服务</div>
+                            <div class="module-subtitle">CategoryCommandApplicationService</div>
+                            <ul class="module-features">
+                                <li class="feature-item">createCategory()</li>
+                                <li class="feature-item">getAllUserCategories()</li>
+                                <li class="feature-item">getUserCategoryAggList()</li>
+                            </ul>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">通知服务</div>
+                            <div class="module-subtitle">NotificationService</div>
+                            <ul class="module-features">
+                                <li class="feature-item">sendMessage()</li>
+                                <li class="feature-item">pushNotify()</li>
+                                <li class="feature-item">emailAlert()</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 领域层 -->
+                <div class="architecture-layer domain-layer">
+                    <h2 class="layer-title">领域核心</h2>
+                    <div class="layer-content">
+                        <div class="module-card">
+                            <div class="module-title">账本聚合根</div>
+                            <div class="module-subtitle">LedgerAgg</div>
+                            <ul class="module-features">
+                                <li class="feature-item">LedgerInfo</li>
+                                <li class="feature-item">LedgerSummaryVO</li>
+                                <li class="feature-item">LedgerBudgetVO</li>
+                                <li class="feature-item">LedgerMemberEntity</li>
+                            </ul>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">分类聚合根</div>
+                            <div class="module-subtitle">CategoryAgg</div>
+                            <ul class="module-features">
+                                <li class="feature-item">SystemCategory</li>
+                                <li class="feature-item">UserCategory</li>
+                            </ul>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">记录聚合根</div>
+                            <div class="module-subtitle">TransactionStatementAgg</div>
+                            <ul class="module-features">
+                                <li class="feature-item">TransactionRecord</li>
+                                <li class="feature-item">Amount</li>
+                                <li class="feature-item">CategoryVO</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 基础设施层 -->
+                <div class="architecture-layer infrastructure-layer">
+                    <h2 class="layer-title">基础设施</h2>
+                    <div class="layer-content">
+                        <div class="module-card">
+                            <div class="module-title">MySQL</div>
+                            <div class="module-subtitle">主从数据库</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">Redis</div>
+                            <div class="module-subtitle">缓存/Session</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">Kafka</div>
+                            <div class="module-subtitle">消息队列</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">Nacos</div>
+                            <div class="module-subtitle">注册中心</div>
+                        </div>
+                        <div class="module-card">
+                            <div class="module-title">ELK</div>
+                            <div class="module-subtitle">日志分析</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

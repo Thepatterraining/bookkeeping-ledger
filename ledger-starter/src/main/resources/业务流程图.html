@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>记账软件业务流程图</title>
+    <style>
+        body {
+            background-color: #FFFFFF;
+            font-family: Arial, sans-serif;
+        }
+        .domain {
+            border: 2px solid #1E90FF;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px;
+            width: 300px;
+            background-color: #F0F8FF;
+        }
+        .domain h2 {
+            font-size: 18px;
+            text-align: center;
+        }
+        .domain ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .domain ul li {
+            font-size: 14px;
+            margin: 5px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="domain" id="accountBookDomain">
+    <h2>账本领域</h2>
+    <ul>
+        <li>创建账本</li>
+        <li>修改账本信息</li>
+        <li>删除账本</li>
+        <li>查询账本列表</li>
+        <li>查询账本信息</li>
+        <li>更新账本预算</li>
+        <li>加入账本</li>
+        <li>查询账本的成员列表</li>
+    </ul>
+</div>
+<div class="domain" id="recordDomain">
+    <h2>记录领域</h2>
+    <ul>
+        <li>添加收支记录</li>
+        <li>修改记录信息</li>
+        <li>删除记录</li>
+        <li>查询记录列表</li>
+    </ul>
+</div>
+<div class="domain" id="categoryDomain">
+    <h2>分类领域</h2>
+    <ul>
+        <li>系统分类管理</li>
+        <ul>
+            <li>查询系统默认分类列表</li>
+            <li>系统分类不可删除和修改</li>
+        </ul>
+        <li>用户分类管理</li>
+        <ul>
+            <li>创建用户自定义分类</li>
+            <li>修改用户分类信息</li>
+            <li>删除用户分类</li>
+            <li>查询用户分类列表</li>
+        </ul>
+        <li>分类层级管理</li>
+        <ul>
+            <li>支持父子分类关系</li>
+            <li>查询完整分类树结构</li>
+            <li>分类层级深度限制</li>
+        </ul>
+        <li>分类统计分析</li>
+        <ul>
+            <li>按分类统计收支金额</li>
+            <li>分类使用频率统计</li>
+            <li>分类趋势分析</li>
+        </ul>
+    </ul>
+</div>
+</body>
+</html>

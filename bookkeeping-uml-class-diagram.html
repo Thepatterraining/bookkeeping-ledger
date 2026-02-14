@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账软件UML类图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #1d1d1f;
+            line-height: 1.4;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+            background: linear-gradient(135deg, #007aff, #34c759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .uml-container {
+            position: relative;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            min-height: 1000px;
+            overflow: auto;
+        }
+
+        /* UML类框 */
+        .uml-class {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 12px;
+        }
+
+        .class-header {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-bottom: 1px solid #333;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .class-stereotype {
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .class-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .class-attributes {
+            padding: 8px 12px;
+            border-bottom: 1px solid #333;
+            background: #fafafa;
+        }
+
+        .class-methods {
+            padding: 8px 12px;
+            background: #ffffff;
+        }
+
+        .attribute, .method {
+            margin: 2px 0;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .private { color: #d73a49; }
+        .protected { color: #f57c00; }
+        .public { color: #28a745; }
+
+        /* 不同类型的类样式 */
+        .aggregate {
+            border-color: #007aff;
+            background: linear-gradient(135deg, #f0f8ff, #ffffff);
+        }
+        .aggregate .class-header {
+            background: linear-gradient(135deg, #007aff, #0056d3);
+            color: white;
+        }
+
+        .entity {
+            border-color: #34c759;
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+        }
+        .entity .class-header {
+            background: linear-gradient(135deg, #34c759, #28a745);
+            color: white;
+        }
+
+        .value-object {
+            border-color: #ff9500;
+            background: linear-gradient(135deg, #fff8f0, #ffffff);
+        }
+        .value-object .class-header {
+            background: linear-gradient(135deg, #ff9500, #ff6b00);
+            color: white;
+        }
+
+        .service {
+            border-color: #ff3b30;
+            background: linear-gradient(135deg, #fff5f5, #ffffff);
+        }
+        .service .class-header {
+            background: linear-gradient(135deg, #ff3b30, #dc3545);
+            color: white;
+        }
+
+        .factory {
+            border-color: #9b59b6;
+            background: linear-gradient(135deg, #f8f5ff, #ffffff);
+        }
+        .factory .class-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        /* 关系线 */
+        .relationship-line {
+            position: absolute;
+            height: 2px;
+            background: #333;
+            transform-origin: left center;
+        }
+
+        .composition-line {
+            background: #007aff;
+        }
+
+        .association-line {
+            background: #666;
+        }
+
+        .dependency-line {
+            background: #ff9500;
+            border-top: 2px dashed #ff9500;
+            background: transparent;
+        }
+
+        /* 图例 */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+
+        .legend-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 2px solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">记账软件UML类图</h1>
+
+        <div class="uml-container">
+            <!-- 领域聚合根 -->
+            <!-- LedgerAgg -->
+            <div class="uml-class aggregate" style="top: 50px; left: 50px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Aggregate Root&gt;&gt;</div>
+                    <div class="class-name">LedgerAgg</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- id: Long</div>
+                    <div class="attribute private">- ledgerNo: String</div>
+                    <div class="attribute private">- ledgerName: String</div>
+                    <div class="attribute private">- ownerNo: String</div>
+                    <div class="attribute private">- ledgerStatus: LedgerStatusVO</div>
+                    <div class="attribute private">- ledgerDesc: String</div>
+                    <div class="attribute private">- ledgerImage: String</div>
+                    <div class="attribute private">- createTime: LocalDateTime</div>
+                    <div class="attribute private">- updateTime: LocalDateTime</div>
+                    <div class="attribute private">- isDeleted: Boolean</div>
+                    <div class="attribute private">- lastLedgerBudget: LedgerBudgetVO</div>
+                    <div class="attribute private">- lastLedgerSummary: LedgerSummaryVO</div>
+                    <div class="attribute private">- memberSet: Set&lt;LedgerMemberEntity&gt;</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ addMember(member: LedgerMemberEntity): void</div>
+                    <div class="method public">+ delete(): void</div>
+                    <div class="method public">+ transaction(amount: Integer, type: TransactionTypeVO): void</div>
+                    <div class="method public">+ save(name: String, desc: String, image: String): void</div>
+                    <div class="method public">+ create(): void</div>
+                    <div class="method public">+ checkUserPermission(userNo: String): Boolean</div>
+                    <div class="method public">+ hasViewPermission(userNo: String): Boolean</div>
+                </div>
+            </div>
+
+            <!-- TransactionStatementAgg -->
+            <div class="uml-class aggregate" style="top: 50px; left: 400px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Aggregate Root&gt;&gt;</div>
+                    <div class="class-name">TransactionStatementAgg</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- id: Long</div>
+                    <div class="attribute private">- transactionStatementNo: String</div>
+                    <div class="attribute private">- ledgerNo: String</div>
+                    <div class="attribute private">- amount: Integer</div>
+                    <div class="attribute private">- transactionType: TransactionTypeVO</div>
+                    <div class="attribute private">- transactionTime: LocalDateTime</div>
+                    <div class="attribute private">- transactionDesc: String</div>
+                    <div class="attribute private">- transactionStatus: Integer</div>
+                    <div class="attribute private">- categorySnapshot: CategorySnapshotVO</div>
+                    <div class="attribute private">- category: CategoryVO</div>
+                    <div class="attribute private">- createTime: LocalDateTime</div>
+                    <div class="attribute private">- updateTime: LocalDateTime</div>
+                    <div class="attribute private">- deleted: Boolean</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ create(): void</div>
+                    <div class="method public">+ delete(): void</div>
+                </div>
+            </div>
+
+            <!-- UserCategoryAgg -->
+            <div class="uml-class aggregate" style="top: 50px; left: 750px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Aggregate Root&gt;&gt;</div>
+                    <div class="class-name">UserCategoryAgg</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- id: Long</div>
+                    <div class="attribute private">- categoryNo: String</div>
+                    <div class="attribute private">- categoryName: String</div>
+                    <div class="attribute private">- categoryIcon: String</div>
+                    <div class="attribute private">- categoryLevel: Integer</div>
+                    <div class="attribute private">- categoryDesc: String</div>
+                    <div class="attribute private">- parentNo: String</div>
+                    <div class="attribute private">- userNo: String</div>
+                    <div class="attribute private">- createTime: LocalDateTime</div>
+                    <div class="attribute private">- updateTime: LocalDateTime</div>
+                    <div class="attribute private">- subCategories: List&lt;UserCategoryAgg&gt;</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ create(): void</div>
+                    <div class="method public">+ addSubCategory(category: UserCategoryAgg): void</div>
+                    <div class="method public">+ isParent(): Boolean</div>
+                </div>
+            </div>
+
+            <!-- SysCategoryAgg -->
+            <div class="uml-class aggregate" style="top: 50px; left: 1100px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Aggregate Root&gt;&gt;</div>
+                    <div class="class-name">SysCategoryAgg</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- id: Long</div>
+                    <div class="attribute private">- categoryNo: String</div>
+                    <div class="attribute private">- categoryName: String</div>
+                    <div class="attribute private">- categoryIcon: String</div>
+                    <div class="attribute private">- categoryLevel: Integer</div>
+                    <div class="attribute private">- categoryDesc: String</div>
+                    <div class="attribute private">- parentNo: String</div>
+                    <div class="attribute private">- createTime: LocalDateTime</div>
+                    <div class="attribute private">- updateTime: LocalDateTime</div>
+                    <div class="attribute private">- subCategories: List&lt;SysCategoryAgg&gt;</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ addSubCategory(category: SysCategoryAgg): void</div>
+                    <div class="method public">+ isParent(): Boolean</div>
+                </div>
+            </div>
+
+            <!-- InvitationAgg -->
+            <div class="uml-class aggregate" style="top: 50px; left: 1450px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Aggregate Root&gt;&gt;</div>
+                    <div class="class-name">InvitationAgg</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- invitationId: Long</div>
+                    <div class="attribute private">- invitationCode: InvitationCodeVO</div>
+                    <div class="attribute private">- ledgerNo: String</div>
+                    <div class="attribute private">- inviterNo: String</div>
+                    <div class="attribute private">- status: InvitationStatusVO</div>
+                    <div class="attribute private">- expireTime: LocalDateTime</div>
+                    <div class="attribute private">- maxUseCount: Integer</div>
+                    <div class="attribute private">- usedCount: Integer</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ useInvitation(userNo: String): void</div>
+                    <div class="method public">+ isValid(): boolean</div>
+                    <div class="method public">+ create(): void</div>
+                </div>
+            </div>
+
+            <!-- 实体类 -->
+            <!-- LedgerMemberEntity -->
+            <div class="uml-class entity" style="top: 400px; left: 50px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Entity&gt;&gt;</div>
+                    <div class="class-name">LedgerMemberEntity</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- id: Long</div>
+                    <div class="attribute private">- ledgerNo: String</div>
+                    <div class="attribute private">- userNo: String</div>
+                    <div class="attribute private">- role: LedgerMemberRoleVO</div>
+                    <div class="attribute private">- joinTime: LocalDateTime</div>
+                    <div class="attribute private">- status: LedgerMemberStatusVO</div>
+                    <div class="attribute private">- createTime: LocalDateTime</div>
+                    <div class="attribute private">- updateTime: LocalDateTime</div>
+                    <div class="attribute private">- isDeleted: Boolean</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ delete(): void</div>
+                </div>
+            </div>
+
+            <!-- 值对象 -->
+            <!-- LedgerStatusVO -->
+            <div class="uml-class value-object" style="top: 400px; left: 350px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Value Object&gt;&gt;</div>
+                    <div class="class-name">LedgerStatusVO</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- status: LedgerStatusEnum</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ of(code: int): LedgerStatusVO</div>
+                    <div class="method public">+ getCode(): int</div>
+                    <div class="method public">+ getLabel(): String</div>
+                </div>
+            </div>
+
+            <!-- TransactionTypeVO -->
+            <div class="uml-class value-object" style="top: 400px; left: 550px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Value Object&gt;&gt;</div>
+                    <div class="class-name">TransactionTypeVO</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- transactionType: TransactionTypeEnum</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ of(code: int): TransactionTypeVO</div>
+                    <div class="method public">+ getCode(): int</div>
+                    <div class="method public">+ isExpenditure(): Boolean</div>
+                </div>
+            </div>
+
+            <!-- CategoryVO -->
+            <div class="uml-class value-object" style="top: 400px; left: 750px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Value Object&gt;&gt;</div>
+                    <div class="class-name">CategoryVO</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- categoryNo: String</div>
+                    <div class="attribute private">- categoryName: String</div>
+                    <div class="attribute private">- categoryIcon: String</div>
+                    <div class="attribute private">- categoryLevel: Integer</div>
+                    <div class="attribute private">- categoryDesc: String</div>
+                    <div class="attribute private">- parentNo: String</div>
+                    <div class="attribute private">- userNo: String</div>
+                </div>
+            </div>
+
+            <!-- LedgerMemberRoleVO -->
+            <div class="uml-class value-object" style="top: 400px; left: 950px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Value Object&gt;&gt;</div>
+                    <div class="class-name">LedgerMemberRoleVO</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- status: LedgerMemberRoleEnum</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ of(code: int): LedgerMemberRoleVO</div>
+                    <div class="method public">+ getCode(): int</div>
+                    <div class="method public">+ getLabel(): String</div>
+                </div>
+            </div>
+
+            <!-- InvitationStatusVO -->
+            <div class="uml-class value-object" style="top: 400px; left: 1150px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Value Object&gt;&gt;</div>
+                    <div class="class-name">InvitationStatusVO</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- status: InvitationStatusEnum</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ of(code: int): InvitationStatusVO</div>
+                    <div class="method public">+ isValid(): Boolean</div>
+                    <div class="method public">+ getCode(): int</div>
+                </div>
+            </div>
+
+            <!-- 应用服务 -->
+            <!-- LedgerCommandApplicationService -->
+            <div class="uml-class service" style="top: 650px; left: 50px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Application Service&gt;&gt;</div>
+                    <div class="class-name">LedgerCommandApplicationService</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- eventPublisher: ApplicationEventPublisher</div>
+                    <div class="attribute private">- ledgerDomainService: LedgerDomainService</div>
+                    <div class="attribute private">- ledgerFactory: LedgerFactory</div>
+                    <div class="attribute private">- invitationDomainService: InvitationDomainService</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ createLedger(request: CreateLedgerRequest): String</div>
+                    <div class="method public">+ deleteLedger(ledgerNo: String): void</div>
+                    <div class="method public">+ updateLedger(request: UpdateLedgerRequest): void</div>
+                    <div class="method public">+ joinLedger(request: JoinLedgerRequest): void</div>
+                </div>
+            </div>
+
+            <!-- TransactionStatementCommandApplicationService -->
+            <div class="uml-class service" style="top: 650px; left: 400px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Application Service&gt;&gt;</div>
+                    <div class="class-name">TransactionStatementCommandApplicationService</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- eventPublisher: ApplicationEventPublisher</div>
+                    <div class="attribute private">- transactionStatementDomainService: TransactionStatementDomainService</div>
+                    <div class="attribute private">- ledgerDomainService: LedgerDomainService</div>
+                    <div class="attribute private">- transactionStatementFactory: TransactionStatementFactory</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ createTransactionStatement(request: CreateTransactionRequest): String</div>
+                    <div class="method public">+ deleteTransaction(transactionNo: String): void</div>
+                    <div class="method public">+ updateTransaction(request: UpdateTransactionRequest): void</div>
+                </div>
+            </div>
+
+            <!-- CategoryCommandApplicationService -->
+            <div class="uml-class service" style="top: 650px; left: 750px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Application Service&gt;&gt;</div>
+                    <div class="class-name">CategoryCommandApplicationService</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- eventPublisher: ApplicationEventPublisher</div>
+                    <div class="attribute private">- userCategoryDomainService: UserCategoryDomainService</div>
+                    <div class="attribute private">- userCategoryFactory: UserCategoryFactory</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ createCategory(request: CreateUserCategoryRequest): String</div>
+                    <div class="method public">+ getAllUserCategories(): List&lt;UserCategoryAgg&gt;</div>
+                    <div class="method public">+ getUserCategoryAggList(): List&lt;UserCategoryAgg&gt;</div>
+                </div>
+            </div>
+
+            <!-- LedgerQueryApplicationService -->
+            <div class="uml-class service" style="top: 650px; left: 1100px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Query Service&gt;&gt;</div>
+                    <div class="class-name">LedgerQueryApplicationService</div>
+                </div>
+                <div class="class-attributes">
+                    <div class="attribute private">- ledgerMapper: LedgerMapper</div>
+                    <div class="attribute private">- ledgerMemberMapper: LedgerMemberMapper</div>
+                    <div class="attribute private">- ledgerDomainService: LedgerDomainService</div>
+                    <div class="attribute private">- userInfoService: UserInfoService</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ getLedger(request: QueryLedgerRequest): LedgerDetailRes</div>
+                    <div class="method public">+ getLedgerList(request: QueryLedgerListRequest): PageRes&lt;LedgerListRes&gt;</div>
+                </div>
+            </div>
+
+            <!-- 工厂类 -->
+            <!-- LedgerFactory -->
+            <div class="uml-class factory" style="top: 900px; left: 50px;">
+                <div class="class-header">
+                    <div class="class-stereotype">&lt;&lt;Factory&gt;&gt;</div>
+                    <div class="class-name">LedgerFactory</div>
+                </div>
+                <div class="class-methods">
+                    <div class="method public">+ createLedgerAgg(name: String, userNo: String, desc: String, image: String): LedgerAgg</div>
+                    <div class="method public">+ createLedgerBudget(ledgerNo: String, amount: BigDecimal, date: LocalDate): LedgerBudgetVO</div>
+                    <div class="method public">+ createLedgerMember(ledgerNo: String, userNo: String, role: LedgerMemberRoleVO): LedgerMemberEntity</div>
+                    <div class="method public">+ createLedgerSummary(income: Long, expense: Long): LedgerSummaryVO</div>
+                </div>
+            </div>
+
+            <!-- 关系线 -->
+            <!-- LedgerAgg 到 LedgerMemberEntity 的组合关系 -->
+            <div class="relationship-line composition-line" style="top: 320px; left: 150px; width: 100px; transform: rotate(45deg);"></div>
+            <div class="arrow composition-arrow" style="top: 395px; left: 240px;"></div>
+
+            <!-- LedgerAgg 到 LedgerStatusVO 的关联关系 -->
+            <div class="relationship-line association-line" style="top: 320px; left: 250px; width: 120px; transform: rotate(25deg);"></div>
+            <div class="arrow association-arrow" style="top: 395px; left: 360px;"></div>
+
+            <!-- TransactionStatementAgg 到 TransactionTypeVO 的关联关系 -->
+            <div class="relationship-line association-line" style="top: 320px; left: 500px; width: 80px; transform: rotate(45deg);"></div>
+            <div class="arrow association-arrow" style="top: 395px; left: 570px;"></div>
+
+            <!-- TransactionStatementAgg 到 CategoryVO 的关联关系 -->
+            <div class="relationship-line association-line" style="top: 320px; left: 600px; width: 180px; transform: rotate(25deg);"></div>
+            <div class="arrow association-arrow" style="top: 395px; left: 770px;"></div>
+
+            <!-- LedgerMemberEntity 到 LedgerMemberRoleVO 的关联关系 -->
+            <div class="relationship-line association-line" style="top: 500px; left: 300px; width: 650px;"></div>
+            <div class="arrow association-arrow" style="top: 496px; left: 940px;"></div>
+
+            <!-- InvitationAgg 到 InvitationStatusVO 的关联关系 -->
+            <div class="relationship-line association-line" style="top: 320px; left: 1350px; width: 100px; transform: rotate(45deg);"></div>
+            <div class="arrow association-arrow" style="top: 395px; left: 1160px;"></div>
+
+            <!-- 应用服务到聚合根的依赖关系 -->
+            <div class="relationship-line dependency-line" style="top: 620px; left: 150px; width: 100px; transform: rotate(-80deg);"></div>
+            <div class="relationship-line dependency-line" style="top: 620px; left: 500px; width: 100px; transform: rotate(-80deg);"></div>
+            <div class="relationship-line dependency-line" style="top: 620px; left: 850px; width: 100px; transform: rotate(-80deg);"></div>
+
+            <!-- 图例 -->
+            <div class="legend">
+                <div class="legend-title">类图图例</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border-color: #007aff; background: rgba(0, 122, 255, 0.1);"></div>
+                    <span>聚合根 (Aggregate Root)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border-color: #34c759; background: rgba(52, 199, 89, 0.1);"></div>
+                    <span>实体 (Entity)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border-color: #ff9500; background: rgba(255, 149, 0, 0.1);"></div>
+                    <span>值对象 (Value Object)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border-color: #ff3b30; background: rgba(255, 59, 48, 0.1);"></div>
+                    <span>应用服务 (Application Service)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border-color: #9b59b6; background: rgba(155, 89, 182, 0.1);"></div>
+                    <span>工厂 (Factory)</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;">关系类型:</div>
+                    <div style="font-size: 11px; margin-bottom: 4px;">
+                        <span style="color: #007aff;">━━</span> 组合 (Composition)
+                    </div>
+                    <div style="font-size: 11px; margin-bottom: 4px;">
+                        <span style="color: #666;">━━</span> 关联 (Association)
+                    </div>
+                    <div style="font-size: 11px;">
+                        <span style="color: #ff9500;">┅┅</span> 依赖 (Dependency)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
