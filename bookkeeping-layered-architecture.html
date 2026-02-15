@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账软件业务架构图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background: #f0f2f5;
+            color: #1d1d1f;
+            line-height: 1.4;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+            background: linear-gradient(135deg, #007aff, #34c759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .architecture-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 分层架构样式 */
+        .architecture-layer {
+            border-radius: 16px;
+            padding: 15px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: relative;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .layer-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .layer-content {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 12px;
+            height: calc(100% - 40px);
+        }
+
+        .module-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 140px;
+            max-width: 200px;
+            flex: 1;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #1d1d1f;
+        }
+
+        .module-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+        }
+
+        .feature-item {
+            padding: 2px 0;
+            font-size: 11px;
+            color: #515154;
+            position: relative;
+            padding-left: 12px;
+            line-height: 1.3;
+        }
+
+        .feature-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        /* 不同层级的颜色主题 */
+        .user-interface-layer {
+            background: linear-gradient(135deg, #a8e6cf, #7fcdcd);
+        }
+        .user-interface-layer .feature-item:before {
+            color: #2d8659;
+        }
+
+        .business-service-layer {
+            background: linear-gradient(135deg, #87ceeb, #4682b4);
+        }
+        .business-service-layer .feature-item:before {
+            color: #1e3a8a;
+        }
+
+        .domain-layer {
+            background: linear-gradient(135deg, #ffd89b, #ff9a56);
+        }
+        .domain-layer .feature-item:before {
+            color: #d97706;
+        }
+
+        .data-layer {
+            background: linear-gradient(135deg, #ffb3ba, #ff7979);
+        }
+        .data-layer .feature-item:before {
+            color: #dc2626;
+        }
+
+        .infrastructure-layer {
+            background: linear-gradient(135deg, #dda0dd, #9370db);
+        }
+        .infrastructure-layer .feature-item:before {
+            color: #6b46c1;
+        }
+
+        /* 扩展模块样式 */
+        .extension-module {
+            border: 1px dashed rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.8);
+        }
+
+        .extension-module .module-title {
+            color: #666;
+            font-style: italic;
+        }
+
+        /* 连接线效果 - 简化版 */
+        .layer-connector {
+            height: 4px;
+            background: linear-gradient(to right, transparent 0%, rgba(0,122,255,0.3) 50%, transparent 100%);
+            margin: 2px 0;
+            position: relative;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .module-card {
+                min-width: 120px;
+                max-width: 160px;
+            }
+            .module-title {
+                font-size: 13px;
+            }
+            .feature-item {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            .architecture-container {
+                gap: 15px;
+            }
+            .layer-content {
+                flex-direction: column;
+                height: auto;
+            }
+            .module-card {
+                max-width: 100%;
+                min-width: 100%;
+            }
+        }
+
+        /* 简化用户接入层 */
+        .user-interface-layer .module-card {
+            min-height: 60px;
+        }
+
+        .user-interface-layer .module-features {
+            display: none;
+        }
+
+        .user-interface-layer .module-title {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">记账软件业务架构图</h1>
+
+        <div class="architecture-container">
+            <!-- 用户接入层 -->
+            <div class="architecture-layer user-interface-layer">
+                <h2 class="layer-title">用户接入层</h2>
+                <div class="layer-content">
+                    <div class="module-card">
+                        <div class="module-title">Web用户</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">移动端用户</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">小程序用户</div>
+                    </div>
+                    <div class="module-card extension-module">
+                        <div class="module-title">第三方系统</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer-connector"></div>
+
+            <!-- 业务服务层 -->
+            <div class="architecture-layer business-service-layer">
+                <h2 class="layer-title">业务服务层</h2>
+                <div class="layer-content">
+                    <div class="module-card">
+                        <div class="module-title">账本服务</div>
+                        <ul class="module-features">
+                            <li class="feature-item">账本管理</li>
+                            <li class="feature-item">成员协作</li>
+                            <li class="feature-item">预算控制</li>
+                            <li class="feature-item">权限分配</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">记录服务</div>
+                        <ul class="module-features">
+                            <li class="feature-item">收支记录</li>
+                            <li class="feature-item">批量操作</li>
+                            <li class="feature-item">数据验证</li>
+                            <li class="feature-item">模板管理</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer-connector"></div>
+
+            <!-- 领域核心层 -->
+            <div class="architecture-layer domain-layer">
+                <h2 class="layer-title">领域核心层</h2>
+                <div class="layer-content">
+                    <div class="module-card">
+                        <div class="module-title">账本域</div>
+                        <ul class="module-features">
+                            <li class="feature-item">账本聚合</li>
+                            <li class="feature-item">成员管理</li>
+                            <li class="feature-item">预算规则</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">分类域</div>
+                        <ul class="module-features">
+                            <li class="feature-item">分类聚合</li>
+                            <li class="feature-item">层级管理</li>
+                            <li class="feature-item">系统分类</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">记录域</div>
+                        <ul class="module-features">
+                            <li class="feature-item">交易聚合</li>
+                            <li class="feature-item">业务规则</li>
+                            <li class="feature-item">数据校验</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer-connector"></div>
+
+            <!-- 数据支撑层 -->
+            <div class="architecture-layer data-layer">
+                <h2 class="layer-title">数据支撑层</h2>
+                <div class="layer-content">
+                    <div class="module-card">
+                        <div class="module-title">业务数据</div>
+                        <ul class="module-features">
+                            <li class="feature-item">账本数据</li>
+                            <li class="feature-item">交易记录</li>
+                            <li class="feature-item">分类数据</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">缓存服务</div>
+                        <ul class="module-features">
+                            <li class="feature-item">Redis缓存</li>
+                            <li class="feature-item">会话存储</li>
+                            <li class="feature-item">热点数据</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">消息服务</div>
+                        <ul class="module-features">
+                            <li class="feature-item">消息队列</li>
+                            <li class="feature-item">事件总线</li>
+                            <li class="feature-item">异步处理</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer-connector"></div>
+
+            <!-- 基础设施层 -->
+            <div class="architecture-layer infrastructure-layer">
+                <h2 class="layer-title">基础设施层</h2>
+                <div class="layer-content">
+                    <div class="module-card">
+                        <div class="module-title">数据库</div>
+                        <ul class="module-features">
+                            <li class="feature-item">MySQL主库</li>
+                            <li class="feature-item">读写分离</li>
+                            <li class="feature-item">数据备份</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">服务治理</div>
+                        <ul class="module-features">
+                            <li class="feature-item">服务注册</li>
+                            <li class="feature-item">负载均衡</li>
+                            <li class="feature-item">熔断降级</li>
+                        </ul>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-title">监控运维</div>
+                        <ul class="module-features">
+                            <li class="feature-item">系统监控</li>
+                            <li class="feature-item">日志收集</li>
+                            <li class="feature-item">告警通知</li>
+                        </ul>
+                    </div>
+                    <div class="module-card extension-module">
+                        <div class="module-title">第三方服务</div>
+                        <ul class="module-features">
+                            <li class="feature-item">短信服务</li>
+                            <li class="feature-item">邮件服务</li>
+                            <li class="feature-item">文件存储</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

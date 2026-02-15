@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账软件业务流程图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #ffffff;
+            color: #1d1d1f;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #86868b;
+            margin-bottom: 40px;
+        }
+        .flow-section {
+            margin-bottom: 50px;
+            background: #f5f5f7;
+            border-radius: 16px;
+            padding: 30px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1d1d1f;
+            text-align: center;
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .flow-step {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .flow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            font-size: 13px;
+            color: #86868b;
+            line-height: 1.4;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #007aff;
+            font-weight: bold;
+        }
+        .arrow-down {
+            transform: rotate(90deg);
+        }
+
+        /* 不同领域的颜色主题 */
+        .account-book .flow-step {
+            border-color: #007aff;
+        }
+        .account-book .step-title {
+            color: #007aff;
+        }
+
+        .record .flow-step {
+            border-color: #34c759;
+        }
+        .record .step-title {
+            color: #34c759;
+        }
+
+        .category .flow-step {
+            border-color: #ff9500;
+        }
+        .category .step-title {
+            color: #ff9500;
+        }
+
+        .decision {
+            background: #fff3cd !important;
+            border-color: #ffc107 !important;
+            border-radius: 50px;
+        }
+        .decision .step-title {
+            color: #856404;
+        }
+
+        .end-step {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+        }
+        .end-step .step-title {
+            color: #155724;
+        }
+
+        .error-step {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+        }
+        .error-step .step-title {
+            color: #721c24;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .branch {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .branch-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #007aff;
+            background: #e3f2fd;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">记账软件业务流程图</h1>
+        <p class="subtitle">基于DDD领域驱动设计的核心业务流程</p>
+
+        <!-- 账本领域流程 -->
+        <div class="flow-section account-book">
+            <h2 class="section-title">📚 账本领域业务流程</h2>
+            <div class="flow-container">
+                <!-- 创建账本流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">用户登录</div>
+                        <div class="step-desc">验证用户身份</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">创建账本</div>
+                        <div class="step-desc">输入账本名称、描述</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">名称重复检查</div>
+                        <div class="step-desc">同用户下账本名称唯一</div>
+                    </div>
+                </div>
+
+                <div class="branch-container">
+                    <div class="branch">
+                        <div class="branch-label">✅ 通过</div>
+                        <div class="flow-step end-step">
+                            <div class="step-title">创建成功</div>
+                            <div class="step-desc">生成账本ID，设置默认预算</div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="branch-label">❌ 失败</div>
+                        <div class="flow-step error-step">
+                            <div class="step-title">创建失败</div>
+                            <div class="step-desc">返回错误信息</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 账本管理流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">查询账本列表</div>
+                        <div class="step-desc">获取用户所有账本</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">选择账本</div>
+                        <div class="step-desc">进入账本详情</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">账本操作</div>
+                        <div class="step-desc">修改/删除/更新预算</div>
+                    </div>
+                </div>
+
+                <!-- 成员管理流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">邀请成员</div>
+                        <div class="step-desc">生成邀请码</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">成员加入</div>
+                        <div class="step-desc">通过邀请码加入</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">权限分配</div>
+                        <div class="step-desc">设置成员角色权限</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分类领域流程 -->
+        <div class="flow-section category">
+            <h2 class="section-title">🏷️ 分类领域业务流程</h2>
+            <div class="flow-container">
+                <!-- 分类初始化流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">系统分类加载</div>
+                        <div class="step-desc">加载默认分类树</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">用户分类查询</div>
+                        <div class="step-desc">获取用户自定义分类</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">分类树构建</div>
+                        <div class="step-desc">合并系统和用户分类</div>
+                    </div>
+                </div>
+
+                <!-- 用户分类管理流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">创建用户分类</div>
+                        <div class="step-desc">输入分类信息</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">分类验证</div>
+                        <div class="step-desc">名称唯一性、层级限制</div>
+                    </div>
+                </div>
+
+                <div class="branch-container">
+                    <div class="branch">
+                        <div class="branch-label">✅ 通过</div>
+                        <div class="flow-step end-step">
+                            <div class="step-title">分类创建成功</div>
+                            <div class="step-desc">更新分类树结构</div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="branch-label">❌ 失败</div>
+                        <div class="flow-step error-step">
+                            <div class="step-title">创建失败</div>
+                            <div class="step-desc">返回验证错误</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分类删除流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">删除分类请求</div>
+                        <div class="step-desc">选择要删除的分类</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">引用检查</div>
+                        <div class="step-desc">检查是否被记录引用</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">权限检查</div>
+                        <div class="step-desc">系统分类不可删除</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录领域流程 -->
+        <div class="flow-section record">
+            <h2 class="section-title">📝 记录领域业务流程</h2>
+            <div class="flow-container">
+                <!-- 添加记录流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">选择账本</div>
+                        <div class="step-desc">确定记录归属</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">选择分类</div>
+                        <div class="step-desc">从分类树中选择</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">输入记录信息</div>
+                        <div class="step-desc">金额、类型、时间、备注</div>
+                    </div>
+                </div>
+
+                <div class="flow-row">
+                    <div class="arrow arrow-down">→</div>
+                </div>
+
+                <div class="flow-row">
+                    <div class="flow-step decision">
+                        <div class="step-title">数据验证</div>
+                        <div class="step-desc">金额>0，时间≤当前时间</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">权限验证</div>
+                        <div class="step-desc">用户是否有账本操作权限</div>
+                    </div>
+                </div>
+
+                <div class="branch-container">
+                    <div class="branch">
+                        <div class="branch-label">✅ 通过</div>
+                        <div class="flow-step end-step">
+                            <div class="step-title">记录保存成功</div>
+                            <div class="step-desc">更新账本统计信息</div>
+                        </div>
+                        <div class="arrow arrow-down">→</div>
+                        <div class="flow-step">
+                            <div class="step-title">预算检查</div>
+                            <div class="step-desc">支出记录检查预算余额</div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="branch-label">❌ 失败</div>
+                        <div class="flow-step error-step">
+                            <div class="step-title">保存失败</div>
+                            <div class="step-desc">返回验证错误信息</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 查询记录流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">设置查询条件</div>
+                        <div class="step-desc">时间范围、分类、类型</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">执行查询</div>
+                        <div class="step-desc">分页查询记录列表</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">统计计算</div>
+                        <div class="step-desc">收入、支出、余额统计</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step end-step">
+                        <div class="step-title">返回结果</div>
+                        <div class="step-desc">记录列表+统计信息</div>
+                    </div>
+                </div>
+
+                <!-- 修改删除记录流程 -->
+                <div class="flow-row">
+                    <div class="flow-step">
+                        <div class="step-title">选择记录</div>
+                        <div class="step-desc">从记录列表选择</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step decision">
+                        <div class="step-title">操作权限检查</div>
+                        <div class="step-desc">只能操作自己的记录</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step">
+                        <div class="step-title">执行操作</div>
+                        <div class="step-desc">修改或删除记录</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step end-step">
+                        <div class="step-title">更新统计</div>
+                        <div class="step-desc">重新计算账本统计</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 整体业务流程总览 -->
+        <div class="flow-section">
+            <h2 class="section-title">🔄 整体业务流程总览</h2>
+            <div class="flow-container">
+                <div class="flow-row">
+                    <div class="flow-step" style="border-color: #6c5ce7;">
+                        <div class="step-title" style="color: #6c5ce7;">用户注册登录</div>
+                        <div class="step-desc">身份认证与授权</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step" style="border-color: #007aff;">
+                        <div class="step-title" style="color: #007aff;">创建/选择账本</div>
+                        <div class="step-desc">账本管理</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step" style="border-color: #ff9500;">
+                        <div class="step-title" style="color: #ff9500;">配置分类</div>
+                        <div class="step-desc">分类体系建立</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step" style="border-color: #34c759;">
+                        <div class="step-title" style="color: #34c759;">记录收支</div>
+                        <div class="step-desc">日常记账操作</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="flow-step" style="border-color: #ff3b30;">
+                        <div class="step-title" style="color: #ff3b30;">查看报表</div>
+                        <div class="step-desc">数据分析展示</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

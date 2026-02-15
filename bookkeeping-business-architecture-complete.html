@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账软件业务架构图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #ffffff;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+            background: linear-gradient(135deg, #007aff, #34c759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #86868b;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        /* 架构层级布局 */
+        .architecture-layer {
+            display: flex;
+            margin-bottom: 40px;
+            min-height: 200px;
+            background: #f5f5f7;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .layer-label {
+            width: 180px;
+            background: linear-gradient(135deg, #007aff, #0056d3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        .layer-content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        /* 业务模块卡片 */
+        .business-module {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            min-width: 280px;
+            max-width: 350px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .business-module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .module-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .module-description {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .capability-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .capability-item {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #515154;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .capability-item:last-child {
+            border-bottom: none;
+        }
+
+        .capability-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #007aff;
+            font-weight: bold;
+        }
+
+        /* 不同模块的颜色主题 */
+        .user-module .module-icon {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        }
+        .user-module {
+            border-color: #6c5ce7;
+        }
+
+        .account-module .module-icon {
+            background: linear-gradient(135deg, #007aff, #0056d3);
+        }
+        .account-module {
+            border-color: #007aff;
+        }
+
+        .category-module .module-icon {
+            background: linear-gradient(135deg, #ff9500, #ff6b00);
+        }
+        .category-module {
+            border-color: #ff9500;
+        }
+
+        .record-module .module-icon {
+            background: linear-gradient(135deg, #34c759, #28a745);
+        }
+        .record-module {
+            border-color: #34c759;
+        }
+
+        .report-module .module-icon {
+            background: linear-gradient(135deg, #ff3b30, #dc3545);
+        }
+        .report-module {
+            border-color: #ff3b30;
+        }
+
+        .notification-module .module-icon {
+            background: linear-gradient(135deg, #5856d6, #4c4cdb);
+        }
+        .notification-module {
+            border-color: #5856d6;
+        }
+
+        /* 领域关系图 */
+        .domain-relationship {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .relationship-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+
+        .domain-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .domain-node {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            min-width: 150px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .domain-arrow {
+            font-size: 28px;
+            color: #007aff;
+            font-weight: bold;
+        }
+
+        /* 核心能力矩阵 */
+        .capability-matrix {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .matrix-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #1d1d1f;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .matrix-item {
+            background: #f5f5f7;
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 5px solid;
+        }
+
+        .matrix-item.core {
+            border-left-color: #007aff;
+        }
+
+        .matrix-item.support {
+            border-left-color: #34c759;
+        }
+
+        .matrix-item.enhance {
+            border-left-color: #ff9500;
+        }
+
+        .matrix-item-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+
+        .matrix-item-desc {
+            font-size: 14px;
+            color: #86868b;
+            line-height: 1.5;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .architecture-layer {
+                flex-direction: column;
+            }
+            .layer-label {
+                width: 100%;
+                writing-mode: horizontal-tb;
+                text-orientation: initial;
+            }
+            .layer-content {
+                padding: 20px;
+            }
+            .business-module {
+                min-width: 100%;
+            }
+            .domain-flow {
+                flex-direction: column;
+            }
+            .domain-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">记账软件业务架构图</h1>
+        <p class="subtitle">基于DDD领域驱动设计的业务能力架构</p>
+
+        <!-- 用户域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                用户域<br>User Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module user-module">
+                    <div class="module-header">
+                        <div class="module-icon">👤</div>
+                        <div class="module-title">用户管理</div>
+                    </div>
+                    <div class="module-description">
+                        负责用户的身份认证、权限管理和个人信息维护，是整个系统的安全基础。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">用户注册与登录</li>
+                        <li class="capability-item">身份认证与授权</li>
+                        <li class="capability-item">个人信息管理</li>
+                        <li class="capability-item">密码安全策略</li>
+                        <li class="capability-item">多端登录管理</li>
+                        <li class="capability-item">用户行为审计</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账本域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                账本域<br>AccountBook Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module account-module">
+                    <div class="module-header">
+                        <div class="module-icon">📚</div>
+                        <div class="module-title">账本管理</div>
+                    </div>
+                    <div class="module-description">
+                        账本是记账的核心载体，提供多账本管理、预算控制和成员协作功能。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">账本创建与配置</li>
+                        <li class="capability-item">账本信息维护</li>
+                        <li class="capability-item">预算设置与监控</li>
+                        <li class="capability-item">账本成员管理</li>
+                        <li class="capability-item">权限角色分配</li>
+                        <li class="capability-item">账本数据统计</li>
+                    </ul>
+                </div>
+
+                <div class="business-module account-module">
+                    <div class="module-header">
+                        <div class="module-icon">🔗</div>
+                        <div class="module-title">协作管理</div>
+                    </div>
+                    <div class="module-description">
+                        支持多用户协作记账，提供邀请机制和权限控制，实现家庭或团队记账。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">邀请码生成</li>
+                        <li class="capability-item">成员邀请与加入</li>
+                        <li class="capability-item">角色权限管理</li>
+                        <li class="capability-item">操作日志记录</li>
+                        <li class="capability-item">成员活动监控</li>
+                        <li class="capability-item">协作冲突处理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分类域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                分类域<br>Category Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module category-module">
+                    <div class="module-header">
+                        <div class="module-icon">🏷️</div>
+                        <div class="module-title">系统分类</div>
+                    </div>
+                    <div class="module-description">
+                        提供标准化的收支分类体系，覆盖常见的生活消费场景，保证基础功能可用。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">默认分类树维护</li>
+                        <li class="capability-item">分类层级管理</li>
+                        <li class="capability-item">分类图标配置</li>
+                        <li class="capability-item">分类使用统计</li>
+                        <li class="capability-item">热门分类推荐</li>
+                        <li class="capability-item">分类数据分析</li>
+                    </ul>
+                </div>
+
+                <div class="business-module category-module">
+                    <div class="module-header">
+                        <div class="module-icon">⚙️</div>
+                        <div class="module-title">用户分类</div>
+                    </div>
+                    <div class="module-description">
+                        支持用户自定义分类，满足个性化记账需求，提供灵活的分类管理能力。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">自定义分类创建</li>
+                        <li class="capability-item">分类信息编辑</li>
+                        <li class="capability-item">分类删除约束</li>
+                        <li class="capability-item">分类排序管理</li>
+                        <li class="capability-item">分类导入导出</li>
+                        <li class="capability-item">分类使用频率</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                记录域<br>Record Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module record-module">
+                    <div class="module-header">
+                        <div class="module-icon">📝</div>
+                        <div class="module-title">交易记录</div>
+                    </div>
+                    <div class="module-description">
+                        记账的核心功能，提供收支记录的完整生命周期管理和数据验证。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">收支记录创建</li>
+                        <li class="capability-item">记录信息编辑</li>
+                        <li class="capability-item">记录删除管理</li>
+                        <li class="capability-item">批量操作支持</li>
+                        <li class="capability-item">记录模板功能</li>
+                        <li class="capability-item">定期记录设置</li>
+                    </ul>
+                </div>
+
+                <div class="business-module record-module">
+                    <div class="module-header">
+                        <div class="module-icon">🔍</div>
+                        <div class="module-title">查询统计</div>
+                    </div>
+                    <div class="module-description">
+                        提供强大的查询和统计功能，支持多维度数据分析和实时统计计算。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">多条件查询</li>
+                        <li class="capability-item">分页数据展示</li>
+                        <li class="capability-item">实时统计计算</li>
+                        <li class="capability-item">数据导出功能</li>
+                        <li class="capability-item">查询历史记录</li>
+                        <li class="capability-item">快速筛选功能</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 报表域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                报表域<br>Report Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module report-module">
+                    <div class="module-header">
+                        <div class="module-icon">📊</div>
+                        <div class="module-title">数据分析</div>
+                    </div>
+                    <div class="module-description">
+                        提供丰富的数据分析和可视化功能，帮助用户洞察消费习惯和财务状况。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">收支趋势分析</li>
+                        <li class="capability-item">分类占比统计</li>
+                        <li class="capability-item">月度年度报表</li>
+                        <li class="capability-item">预算执行分析</li>
+                        <li class="capability-item">同比环比分析</li>
+                        <li class="capability-item">财务健康评估</li>
+                    </ul>
+                </div>
+
+                <div class="business-module report-module">
+                    <div class="module-header">
+                        <div class="module-icon">📈</div>
+                        <div class="module-title">可视化展示</div>
+                    </div>
+                    <div class="module-description">
+                        通过图表和仪表盘形式直观展示财务数据，提升用户体验和数据理解。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">图表可视化</li>
+                        <li class="capability-item">仪表盘展示</li>
+                        <li class="capability-item">交互式报表</li>
+                        <li class="capability-item">自定义报表</li>
+                        <li class="capability-item">报表分享功能</li>
+                        <li class="capability-item">报表订阅推送</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通知域 -->
+        <div class="architecture-layer">
+            <div class="layer-label">
+                通知域<br>Notification Domain
+            </div>
+            <div class="layer-content">
+                <div class="business-module notification-module">
+                    <div class="module-header">
+                        <div class="module-icon">🔔</div>
+                        <div class="module-title">消息通知</div>
+                    </div>
+                    <div class="module-description">
+                        提供多渠道消息通知服务，及时提醒用户重要事件和预算状况。
+                    </div>
+                    <ul class="capability-list">
+                        <li class="capability-item">预算超支提醒</li>
+                        <li class="capability-item">定期记账提醒</li>
+                        <li class="capability-item">账本邀请通知</li>
+                        <li class="capability-item">系统消息推送</li>
+                        <li class="capability-item">邮件通知服务</li>
+                        <li class="capability-item">通知偏好设置</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 领域关系图 -->
+        <div class="domain-relationship">
+            <h3 class="relationship-title">🔗 领域间依赖关系</h3>
+            <div class="domain-flow">
+                <div class="domain-node" style="border-color: #6c5ce7; color: #6c5ce7;">用户域</div>
+                <div class="domain-arrow">→</div>
+                <div class="domain-node" style="border-color: #007aff; color: #007aff;">账本域</div>
+                <div class="domain-arrow">→</div>
+                <div class="domain-node" style="border-color: #ff9500; color: #ff9500;">分类域</div>
+                <div class="domain-arrow">→</div>
+                <div class="domain-node" style="border-color: #34c759; color: #34c759;">记录域</div>
+                <div class="domain-arrow">→</div>
+                <div class="domain-node" style="border-color: #ff3b30; color: #ff3b30;">报表域</div>
+            </div>
+            <div style="margin-top: 30px; display: flex; justify-content: center;">
+                <div class="domain-node" style="border-color: #5856d6; color: #5856d6;">通知域</div>
+                <div style="margin: 0 20px; color: #86868b; font-size: 14px; align-self: center;">
+                    ↑ 横向支撑所有业务域
+                </div>
+            </div>
+        </div>
+
+        <!-- 核心能力矩阵 -->
+        <div class="capability-matrix">
+            <h3 class="matrix-title">🎯 业务能力矩阵</h3>
+            <div class="matrix-grid">
+                <div class="matrix-item core">
+                    <div class="matrix-item-title">核心业务能力</div>
+                    <div class="matrix-item-desc">
+                        • 用户身份管理与认证<br>
+                        • 多账本管理与协作<br>
+                        • 收支记录与分类<br>
+                        • 实时数据统计计算<br>
+                        • 预算控制与监控
+                    </div>
+                </div>
+
+                <div class="matrix-item support">
+                    <div class="matrix-item-title">支撑业务能力</div>
+                    <div class="matrix-item-desc">
+                        • 系统分类体系维护<br>
+                        • 用户自定义分类<br>
+                        • 数据查询与筛选<br>
+                        • 权限角色管理<br>
+                        • 操作日志审计
+                    </div>
+                </div>
+
+                <div class="matrix-item enhance">
+                    <div class="matrix-item-title">增值业务能力</div>
+                    <div class="matrix-item-desc">
+                        • 智能数据分析<br>
+                        • 可视化报表展示<br>
+                        • 消费习惯洞察<br>
+                        • 财务健康评估<br>
+                        • 个性化推荐服务
+                    </div>
+                </div>
+
+                <div class="matrix-item core">
+                    <div class="matrix-item-title">技术支撑能力</div>
+                    <div class="matrix-item-desc">
+                        • 高并发数据处理<br>
+                        • 分布式事务管理<br>
+                        • 数据安全与隐私<br>
+                        • 多端同步机制<br>
+                        • 系统监控告警
+                    </div>
+                </div>
+
+                <div class="matrix-item support">
+                    <div class="matrix-item-title">运营支撑能力</div>
+                    <div class="matrix-item-desc">
+                        • 用户行为分析<br>
+                        • 产品使用统计<br>
+                        • 异常监控处理<br>
+                        • 客户服务支持<br>
+                        • 数据备份恢复
+                    </div>
+                </div>
+
+                <div class="matrix-item enhance">
+                    <div class="matrix-item-title">扩展业务能力</div>
+                    <div class="matrix-item-desc">
+                        • 第三方系统集成<br>
+                        • 开放API服务<br>
+                        • 插件扩展机制<br>
+                        • 多语言国际化<br>
+                        • 移动端适配优化
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
