@@ -17,7 +17,8 @@ spring:
     url: jdbc:mysql://localhost:3306/bookkeeping?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
 #    password: 123456
-    password: zt123456789+
+#    password: zt123456789+
+    password: z19980325T
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       #自动提交
