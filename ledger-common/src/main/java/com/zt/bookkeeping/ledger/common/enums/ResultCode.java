@@ -38,6 +38,7 @@ public enum ResultCode {
 
     INVITATION_INVALID(1009, "邀请码无效"),
     TRANSACTION_STATEMENT_NOT_FOUND(1010, "交易记录不存在"),
+    BUDGET_TOO_LARGE(1011, "预算太大了，系统暂不支持")
     ;
 
     private final Integer code;

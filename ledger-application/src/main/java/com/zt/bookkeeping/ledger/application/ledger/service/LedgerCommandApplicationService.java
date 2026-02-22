@@ -5,6 +5,7 @@ import com.zt.bookkeeping.ledger.application.ledger.dto.JoinLedgerRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerBudgetRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.UpdateLedgerRequest;
 import com.zt.bookkeeping.ledger.common.base.DomainEvent;
+import com.zt.bookkeeping.ledger.common.constant.NumberConst;
 import com.zt.bookkeeping.ledger.common.enums.ResultCode;
 import com.zt.bookkeeping.ledger.domain.exception.AggNotExistsException;
 import com.zt.bookkeeping.ledger.domain.exception.DomainException;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -98,6 +100,10 @@ public class LedgerCommandApplicationService {
         LedgerAgg ledgerAgg = ledgerDomainService.findByNo(request.getLedgerNo());
         if (ledgerAgg == null) {
             throw new AggNotExistsException(ResultCode.LEDGER_NOT_FOUND);
+        }
+        // 校验预算金额 todo exception
+        if (NumberConst.MILLIONS_AND_MILLIONS.compareTo(request.getBudgetAmount()) < NumberConst.ZERO) {
+            throw new AggNotExistsException(ResultCode.BUDGET_TOO_LARGE);
         }
         // 账本存在则更新
         LedgerBudgetVO ledgerBudget = ledgerFactory.createLedgerBudget(request.getLedgerNo(), request.getBudgetAmount(), request.getBudgetDate());

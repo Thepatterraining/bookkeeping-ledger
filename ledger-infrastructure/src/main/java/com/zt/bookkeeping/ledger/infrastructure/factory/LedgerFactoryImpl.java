@@ -3,6 +3,7 @@ package com.zt.bookkeeping.ledger.infrastructure.factory;
 import com.zt.bookkeeping.ledger.domain.generator.SnowFlakeGenerator;
 import com.zt.bookkeeping.ledger.domain.ledger.entity.*;
 import com.zt.bookkeeping.ledger.domain.ledger.factory.LedgerFactory;
+import com.zt.bookkeeping.ledger.infrastructure.util.LocalDateTimeUtil;
 import com.zt.bookkeeping.ledger.infrastructure.util.MoneyUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class LedgerFactoryImpl implements LedgerFactory {
                 .ownerNo(userNo)
                 .ledgerImage(ledgerImage)
                 .ledgerNo(ledgerNo)
-                .lastLedgerBudget(createLedgerBudget(ledgerNo, BigDecimal.ZERO, LocalDate.now()))
+                .lastLedgerBudget(createLedgerBudget(ledgerNo, BigDecimal.ZERO, LocalDateTimeUtil.getThisMonthBegin()))
                 .memberSet(Set.of(memberEntity))
                 .build();
     }

@@ -106,6 +106,15 @@ public class LocalDateTimeUtil {
     }
 
     /**
+     * 获取本月一号
+     * @return
+     */
+    public static LocalDate getThisMonthBegin() {
+        LocalDate now = LocalDate.now();
+        return now.with(TemporalAdjusters.firstDayOfMonth());
+    }
+
+    /**
      * 获取本周周一
      * @return
      */
