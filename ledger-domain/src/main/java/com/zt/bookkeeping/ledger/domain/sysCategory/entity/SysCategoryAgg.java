@@ -26,6 +26,7 @@ public class SysCategoryAgg extends AbstractAgg {
     private String categoryName;
     private String categoryIcon;
     private Integer categoryLevel;
+    private Integer categoryType;
     private String categoryDesc;
     private String parentNo;
     private Long id;

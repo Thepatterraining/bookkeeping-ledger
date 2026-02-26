@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class QueryLedgerListRequest implements Serializable {
+public class QueryCategoryListRequest implements Serializable {
+    private Integer categoryType;
     private Integer page;
     private Integer size;
 }

@@ -1,7 +1,9 @@
 package com.zt.bookkeeping.ledger.application.category.service;
 
 import com.zt.bookkeeping.ledger.application.category.dto.CategoryListRes;
+import com.zt.bookkeeping.ledger.application.ledger.dto.QueryCategoryListRequest;
 import com.zt.bookkeeping.ledger.application.ledger.dto.QueryLedgerListRequest;
+import com.zt.bookkeeping.ledger.common.enums.CategoryTypeEnum;
 import com.zt.bookkeeping.ledger.common.res.PageRes;
 import com.zt.bookkeeping.ledger.domain.sysCategory.entity.SysCategoryAgg;
 import com.zt.bookkeeping.ledger.domain.sysCategory.repository.SysCategoryRepository;
@@ -27,17 +29,17 @@ public class CategoryQueryApplicationService {
     @Resource
     private SysCategoryRepository sysCategoryRepository;
 
-    private List<CategoryListRes> convertToLedgerListResList(List<SysCategoryAgg> sysCategoryAggList, List<UserCategoryAgg> userCategoryAggList) {
+    private List<CategoryListRes> convertToCategoryListResList(List<SysCategoryAgg> sysCategoryAggList, List<UserCategoryAgg> userCategoryAggList) {
         if (CollectionUtils.isEmpty(sysCategoryAggList) && CollectionUtils.isEmpty(userCategoryAggList)) {
             return Collections.emptyList();
         }
         List<CategoryListRes> sysCategoryList = sysCategoryAggList.stream()
-                .map(this::convertToLedgerListRes).filter(Objects::nonNull).toList();
-        List<CategoryListRes> userCategoryList = userCategoryAggList.stream().map(this::convertToLedgerListRes).filter(Objects::nonNull).toList();
+                .map(this::convertToCategoryListRes).filter(Objects::nonNull).toList();
+        List<CategoryListRes> userCategoryList = userCategoryAggList.stream().map(this::convertToCategoryListRes).filter(Objects::nonNull).toList();
         return Stream.concat(sysCategoryList.stream(), userCategoryList.stream()).collect(Collectors.toList());
     }
 
-    private CategoryListRes convertToLedgerListRes(SysCategoryAgg agg) {
+    private CategoryListRes convertToCategoryListRes(SysCategoryAgg agg) {
         if (agg == null) {
             return null;
         }
@@ -46,12 +48,14 @@ public class CategoryQueryApplicationService {
         res.setCategoryNo(agg.getCategoryNo());
         res.setCategoryDesc(agg.getCategoryDesc());
         res.setCategoryLevel(agg.getCategoryLevel());
+        res.setCategoryType(agg.getCategoryType());
+        res.setType(CategoryTypeEnum.SYS.getCode());
         res.setCategoryIcon(agg.getCategoryIcon());
-        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToLedgerListRes).collect(Collectors.toList()));
+        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToCategoryListRes).collect(Collectors.toList()));
         return res;
     }
 
-    private CategoryListRes convertToLedgerListRes(UserCategoryAgg agg) {
+    private CategoryListRes convertToCategoryListRes(UserCategoryAgg agg) {
         if (agg == null) {
             return null;
         }
@@ -60,14 +64,16 @@ public class CategoryQueryApplicationService {
         res.setCategoryNo(agg.getCategoryNo());
         res.setCategoryDesc(agg.getCategoryDesc());
         res.setCategoryLevel(agg.getCategoryLevel());
+        res.setCategoryType(agg.getCategoryType());
+        res.setType(CategoryTypeEnum.USER.getCode());
         res.setCategoryIcon(agg.getCategoryIcon());
-        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToLedgerListRes).collect(Collectors.toList()));
+        res.setSubCategoryList(agg.getSubCategories().stream().map(this::convertToCategoryListRes).collect(Collectors.toList()));
         return res;
     }
 
-    private List<SysCategoryAgg> getAllSysCategoryAgg() {
+    private List<SysCategoryAgg> getAllSysCategoryAgg(Integer categoryType) {
         // 查询所有系统分类
-        List<SysCategoryAgg> sysCategoryAggList = sysCategoryRepository.loadAll();
+        List<SysCategoryAgg> sysCategoryAggList = sysCategoryRepository.loadAll(categoryType);
         Map<String, SysCategoryAgg> categoryMap = new HashMap<>();
         List<SysCategoryAgg> rootCategories = new ArrayList<>();
 
@@ -89,11 +95,11 @@ public class CategoryQueryApplicationService {
         return rootCategories;
     }
 
-    private List<UserCategoryAgg> getUserCategoryAggList() {
+    private List<UserCategoryAgg> getUserCategoryAggList(Integer categoryType) {
         // 获取用户ID
         String userNo = UserContextHolder.getCurrentUserNo();
         // 查询所有用户分类
-        List<UserCategoryAgg> userCategoryAggList = userCategoryRepository.loadListByUserNo(userNo);
+        List<UserCategoryAgg> userCategoryAggList = userCategoryRepository.loadListByUserNo(userNo, categoryType);
         Map<String, UserCategoryAgg> categoryMap = new HashMap<>();
         List<UserCategoryAgg> rootCategories = new ArrayList<>();
 
@@ -115,18 +121,30 @@ public class CategoryQueryApplicationService {
         return rootCategories;
     }
 
-    public PageRes<CategoryListRes> getAllUserCategories(QueryLedgerListRequest request) {
+    public PageRes<CategoryListRes> getAllUserCategories(QueryCategoryListRequest request) {
 
         // 查询所有系统分类
-        List<SysCategoryAgg> sysCategoryAggList = getAllSysCategoryAgg();
+        List<SysCategoryAgg> sysCategoryAggList = getAllSysCategoryAgg(request.getCategoryType());
         // 查询所有用户分类
-        List<UserCategoryAgg> userCategoryAggList = getUserCategoryAggList();
+        List<UserCategoryAgg> userCategoryAggList = getUserCategoryAggList(request.getCategoryType());
         // 组装返回
         PageRes<CategoryListRes> pageRes = new PageRes<>();
         pageRes.setPageNum(1L);
         pageRes.setPageSize((long) (sysCategoryAggList.size() + userCategoryAggList.size()));
         pageRes.setTotal((long) (sysCategoryAggList.size() + userCategoryAggList.size()));
-        pageRes.setList(convertToLedgerListResList(sysCategoryAggList, userCategoryAggList));
+        pageRes.setList(convertToCategoryListResList(sysCategoryAggList, userCategoryAggList));
+        return pageRes;
+    }
+
+    public PageRes<CategoryListRes> getUserCategories(QueryCategoryListRequest request) {
+        // 查询所有用户分类
+        List<UserCategoryAgg> userCategoryAggList = getUserCategoryAggList(request.getCategoryType());
+        // 组装返回
+        PageRes<CategoryListRes> pageRes = new PageRes<>();
+        pageRes.setPageNum(1L);
+        pageRes.setPageSize((long) (userCategoryAggList.size()));
+        pageRes.setTotal((long) (userCategoryAggList.size()));
+        pageRes.setList(convertToCategoryListResList(new ArrayList<>(), userCategoryAggList));
         return pageRes;
     }
 }

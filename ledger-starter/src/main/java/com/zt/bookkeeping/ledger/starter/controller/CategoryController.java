@@ -27,7 +27,12 @@ public class CategoryController {
     }
 
     @GetMapping("/all/list")
-    public Result<PageRes<CategoryListRes>> getUserAllCategoryList(QueryLedgerListRequest request) {
+    public Result<PageRes<CategoryListRes>> getUserAllCategoryList(QueryCategoryListRequest request) {
         return Result.success(categoryQueryApplicationService.getAllUserCategories(request));
+    }
+
+    @GetMapping("/user/list")
+    public Result<PageRes<CategoryListRes>> getUserCategoryList(QueryCategoryListRequest request) {
+        return Result.success(categoryQueryApplicationService.getUserCategories(request));
     }
 }

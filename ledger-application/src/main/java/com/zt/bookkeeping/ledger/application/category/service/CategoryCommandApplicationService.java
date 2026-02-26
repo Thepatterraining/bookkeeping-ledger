@@ -54,7 +54,8 @@ public class CategoryCommandApplicationService {
                 request.getParentNo(),
                 request.getTransactionDesc(),
                 request.getCategoryIcon(),
-                request.getCategoryLevel()
+                request.getCategoryLevel(),
+                request.getCategoryType()
         );
         categoryAgg.create();
 

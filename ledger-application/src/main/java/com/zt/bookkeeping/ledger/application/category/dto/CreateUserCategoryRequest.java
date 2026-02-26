@@ -20,6 +20,9 @@ public class CreateUserCategoryRequest {
     @NotBlank
     private String categoryIcon;
 
+    @NotNull
+    private Integer categoryType;
+
     private String parentNo;
 
 }

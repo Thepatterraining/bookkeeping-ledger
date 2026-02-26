@@ -16,7 +16,7 @@ public interface UserCategoryRepository {
 
     UserCategoryAgg load(String categoryNo);
 
-    List<UserCategoryAgg> loadListByUserNo(String userNo);
+    List<UserCategoryAgg> loadListByUserNo(String userNo, Integer categoryType);
 
     UserCategoryAgg findByNameAndUserNo(String name, String userNo);
 }

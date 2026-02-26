@@ -48,6 +48,7 @@ public class UserCategoryRepositoryImpl implements UserCategoryRepository {
                 .categoryDesc(userCategoryAgg.getCategoryDesc())
                 .parentNo(userCategoryAgg.getParentNo())
                 .userNo(userCategoryAgg.getUserNo())
+                .categoryType(userCategoryAgg.getCategoryType())
                 .build();
     }
 
@@ -64,6 +65,7 @@ public class UserCategoryRepositoryImpl implements UserCategoryRepository {
                 .createTime(userCategoryPO.getCreateTime())
                 .updateTime(userCategoryPO.getUpdateTime())
                 .subCategories(new ArrayList<>())
+                .categoryType(userCategoryPO.getCategoryType())
                 .build();
         return userCategoryAgg;
     }
@@ -89,10 +91,11 @@ public class UserCategoryRepositoryImpl implements UserCategoryRepository {
     }
 
     @Override
-    public List<UserCategoryAgg> loadListByUserNo(String userNo) {
+    public List<UserCategoryAgg> loadListByUserNo(String userNo, Integer categoryType) {
         // 查询用户分类基本信息
         LambdaQueryWrapper<UserCategoryPO>  wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UserCategoryPO::getUserNo, userNo);
+        wrapper.eq(UserCategoryPO::getUserNo, userNo)
+                .eq(UserCategoryPO::getCategoryType, categoryType);
         List<UserCategoryPO> userCategoryPOList = userCategoryMapper.selectList(wrapper);
         if (userCategoryPOList == null) {
             return new ArrayList<>();

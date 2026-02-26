@@ -13,5 +13,5 @@ public interface SysCategoryRepository {
 
     SysCategoryAgg load(String categoryNo);
 
-    List<SysCategoryAgg> loadAll();
+    List<SysCategoryAgg> loadAll(Integer  categoryType);
 }

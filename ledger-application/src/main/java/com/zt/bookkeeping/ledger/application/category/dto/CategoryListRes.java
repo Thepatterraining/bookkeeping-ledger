@@ -11,6 +11,8 @@ public class CategoryListRes {
     private String categoryName;
     private String categoryNo;
     private Integer categoryLevel;
+    private Integer categoryType;
+    private Integer type;
     private String categoryDesc;
     private String categoryIcon;
     private List<CategoryListRes> subCategoryList;

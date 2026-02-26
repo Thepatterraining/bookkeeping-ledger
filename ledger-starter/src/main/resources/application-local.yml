@@ -17,8 +17,8 @@ spring:
     url: jdbc:mysql://localhost:3306/bookkeeping?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
 #    password: 123456
-#    password: zt123456789+
-    password: z19980325T
+    password: zt123456789+
+#    password: z19980325T
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       #自动提交
@@ -66,6 +66,7 @@ dubbo:
   protocol:
     name: tri
     port: 50051
+#    serialization: hessian2
   registry:
     address: nacos://${spring.cloud.nacos.discovery.server-addr:localhost}?username=nacos&password=nacos
     parameters:

@@ -20,6 +20,7 @@ public class SysCategoryPO extends AbstractPO {
     private String categoryName;
     private String categoryIcon;
     private Integer categoryLevel;
+    private Integer categoryType;
     private String categoryDesc;
     private String parentNo;
 

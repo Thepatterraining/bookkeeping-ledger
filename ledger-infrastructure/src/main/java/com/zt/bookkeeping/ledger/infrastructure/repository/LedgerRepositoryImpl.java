@@ -208,6 +208,7 @@ public class LedgerRepositoryImpl implements LedgerRepository {
         if (budget == null) {
             ledgerBudgetMapper.insert(ledgerBudgetPO);
         } else {
+            budget.setBudgetAmount(ledgerBudgetPO.getBudgetAmount());
             budget.setUsedAmount(ledgerBudgetPO.getUsedAmount());
             budget.setRemainedAmount(ledgerBudgetPO.getRemainedAmount());
             ledgerBudgetMapper.updateById(budget);

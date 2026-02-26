@@ -22,7 +22,7 @@ public class UserCategoryFactoryImpl implements UserCategoryFactory {
 
     @Override
     public UserCategoryAgg createUserCategory(String categoryName, String userNo, String parentCategoryNo,
-            String description, String categoryIcon, Integer categoryLevel) {
+            String description, String categoryIcon, Integer categoryLevel, Integer categoryType) {
         validateCategoryName(categoryName);
         validateUserId(userNo);
         String no = snowFlakeGenerator.nextId("user_category");
@@ -35,6 +35,8 @@ public class UserCategoryFactoryImpl implements UserCategoryFactory {
                 .parentNo(parentCategoryNo)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
+                .userNo(userNo)
+                .categoryType(categoryType)
                 .build();
     }
 

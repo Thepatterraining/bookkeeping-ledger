@@ -10,6 +10,6 @@ import java.time.LocalDate;
 public interface UserCategoryFactory {
 
     UserCategoryAgg createUserCategory(String categoryName, String userNo, String parentCategoryNo,
-            String description, String categoryIcon, Integer categoryLevel);
+            String description, String categoryIcon, Integer categoryLevel, Integer categoryType);
 
 }

@@ -51,6 +51,7 @@ public class SysCategoryRepositoryImpl implements SysCategoryRepository {
                 .categoryName(sysCategoryPO.getCategoryName())
                 .categoryIcon(sysCategoryPO.getCategoryIcon())
                 .categoryLevel(sysCategoryPO.getCategoryLevel())
+                .categoryType(sysCategoryPO.getCategoryType())
                 .categoryDesc(sysCategoryPO.getCategoryDesc())
                 .parentNo(sysCategoryPO.getParentNo())
                 .createTime(sysCategoryPO.getCreateTime())
@@ -73,8 +74,10 @@ public class SysCategoryRepositoryImpl implements SysCategoryRepository {
     }
 
     @Override
-    public List<SysCategoryAgg> loadAll() {
-        List<SysCategoryPO> sysCategoryPOList = sysCategoryMapper.selectList(null);
+    public List<SysCategoryAgg> loadAll(Integer categoryType) {
+        LambdaQueryWrapper<SysCategoryPO>  wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysCategoryPO::getCategoryType, categoryType);
+        List<SysCategoryPO> sysCategoryPOList = sysCategoryMapper.selectList(wrapper);
         return sysCategoryPOList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 
